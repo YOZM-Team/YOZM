@@ -11,7 +11,19 @@ import SwiftUI
 struct YOZMApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
         }
     }
+}
+
+struct MainView: View {
+    var body: some View {
+        NavigationStack {
+            HomeView()
+        }
+    }
+}
+
+#Preview {
+    MainView()
 }
