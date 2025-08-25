@@ -1,5 +1,5 @@
 //
-//  WordAudioCloud.swift
+//  WordAudioRecord.swift
 //  YOZM
 //
 //  Created by 최희진 on 8/26/25.
@@ -7,7 +7,7 @@
 
 import CloudKit
 
-struct WordAudioCloud {
+struct WordAudioRecord {
     let recordID: CKRecord.ID
     let id: String
     let word: String
