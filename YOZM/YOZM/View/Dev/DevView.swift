@@ -17,6 +17,9 @@ struct DevView: View {
                 NavigationLink("Speech Recognition") {
                     SpeechRecognitionView()
                 }
+                NavigationLink("Pronunciation Score") {
+                    PronunciationScoreView()
+                }
             }
             .navigationTitle("Dev")
         }
