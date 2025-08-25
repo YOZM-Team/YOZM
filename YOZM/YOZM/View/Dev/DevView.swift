@@ -14,6 +14,9 @@ struct DevView: View {
                 NavigationLink("Audio Player") {
                     AudioPlayerView()
                 }
+                NavigationLink("Speech Recognition") {
+                    SpeechRecognitionView()
+                }
             }
             .navigationTitle("Dev")
         }
