@@ -14,9 +14,7 @@ enum AudioPlayerServiceError: Error, LocalizedError {
 final class AudioPlayerService {
     static let shared = AudioPlayerService()
 
-    private init() {
-        setupAudioSession()
-    }
+    private init() {}
 
     private(set) var isPlaying: Bool = false
     private(set) var currentTime: TimeInterval = 0.0
@@ -39,7 +37,8 @@ final class AudioPlayerService {
         guard let player else {
             throw AudioPlayerServiceError.playerIsNotInitialized
         }
-        
+
+        configureAudioSession()
         player.play()
         isPlaying = true
     }
@@ -48,7 +47,7 @@ final class AudioPlayerService {
         guard let player else {
             throw AudioPlayerServiceError.playerIsNotInitialized
         }
-        
+
         player.stop()
         isPlaying = false
     }
@@ -57,22 +56,22 @@ final class AudioPlayerService {
         guard let player else {
             throw AudioPlayerServiceError.playerIsNotInitialized
         }
-        
+
         player.stop()
         player.currentTime = 0.0
         isPlaying = false
     }
-    
+
     func seek(to time: TimeInterval) throws {
         guard let player else {
             throw AudioPlayerServiceError.playerIsNotInitialized
         }
-        
+
         player.currentTime = max(0.0, min(time, player.duration))
         self.currentTime = player.currentTime
     }
 
-    private func setupAudioSession() {
+    private func configureAudioSession() {
         do {
             let session = AVAudioSession.sharedInstance()
             try session.setCategory(.playback, mode: .default, options: [])
