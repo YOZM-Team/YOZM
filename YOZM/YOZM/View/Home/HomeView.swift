@@ -17,6 +17,11 @@ struct HomeView: View {
 
     var body: some View {
         Text("Home")
+//            .onAppear{
+//                Task{
+//                    let _ = try await CloudKitService.shared.fetchAndPrintRecord(recordIDString: "CCE66256-9702-4974-B38E-5F3F5B8C6A54")
+//                }
+//            }
     }
 }
 

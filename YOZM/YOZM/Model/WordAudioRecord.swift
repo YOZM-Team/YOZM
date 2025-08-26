@@ -8,27 +8,19 @@
 import CloudKit
 
 struct WordAudioRecord {
-    let recordID: CKRecord.ID
-    let id: String
+    let recordID: String
+    let id: Int64
     let word: String
     let meaning: String
     let sampleSentence: String
     let sampleDialogue: [String]
     
     init(from record: CKRecord) {
-        self.recordID = record.recordID
-        self.id = record["id"] as? String ?? ""
+        self.recordID = record.recordID.recordName
+        self.id = record["id"] as? Int64 ?? 0
         self.word = record["word"] as? String ?? ""
         self.meaning = record["meaning"] as? String ?? ""
         self.sampleSentence = record["sampleSentence"] as? String ?? ""
-        
-        // 시나리오 텍스트들 추출
-        var DialogueArray: [String] = []
-        var scenarioIndex = 1
-        while let sampleDialogue = record["sampleSentence\(scenarioIndex)"] as? String {
-            DialogueArray.append(sampleDialogue)
-            scenarioIndex += 1
-        }
-        self.sampleDialogue = DialogueArray
+        self.sampleDialogue =  record["sampleDialogue"] as? [String] ?? []
     }
 }

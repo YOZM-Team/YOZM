@@ -41,7 +41,9 @@ final class CloudKitService {
     }
     
     /// 특정 레코드 ID로 음성 데이터만 가져오기
-    func fetchAudioData(recordID: CKRecord.ID, audioType: AudioType) async throws -> CKAsset {
+    func fetchAudioData(recordIDString: String, audioType: AudioType) async throws -> CKAsset {
+        let recordID = createRecordID(from: recordIDString)
+        
         do {
             let record = try await publicDatabase.record(for: recordID)
             
@@ -63,8 +65,10 @@ final class CloudKitService {
         }
     }
     
-    /// 특정 recordID의 데이터를 가져와서 출력
-    func fetchAndPrintRecord(recordID: CKRecord.ID) async throws -> WordAudioRecord {
+    /// 특정 recordID의 데이터 조회
+    func fetchAndPrintRecord(recordIDString: String) async throws -> WordAudioRecord {
+        let recordID = createRecordID(from: recordIDString)
+        
         do {
             let record = try await publicDatabase.record(for: recordID)
             
@@ -91,5 +95,9 @@ final class CloudKitService {
                 throw CloudKitError.networkError(error.localizedDescription)
             }
         }
+    }
+
+    private func createRecordID(from recordName: String) -> CKRecord.ID {
+        return CKRecord.ID(recordName: recordName)
     }
 }
