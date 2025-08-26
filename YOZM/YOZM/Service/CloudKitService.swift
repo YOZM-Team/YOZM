@@ -11,6 +11,7 @@ import CloudKit
 enum CloudKitError: Error, LocalizedError {
     case recordNotFound
     case audioDataNotFound
+    case audioURLNotFound
     case invalidRecordType
     case networkError(String)
     
@@ -20,6 +21,8 @@ enum CloudKitError: Error, LocalizedError {
             return "레코드를 찾을 수 없습니다"
         case .audioDataNotFound:
             return "음성 데이터를 찾을 수 없습니다"
+        case .audioURLNotFound:
+            return "음성 파일 URL을 찾을 수 없습니다"
         case .invalidRecordType:
             return "잘못된 레코드 타입입니다"
         case .networkError(let message):
@@ -41,7 +44,7 @@ final class CloudKitService {
     }
     
     /// 특정 레코드 ID로 음성 데이터만 가져오기
-    func fetchAudioData(recordIDString: String, audioType: AudioType) async throws -> CKAsset {
+    func fetchAudioData(recordIDString: String, audioType: AudioType) async throws -> URL {
         let recordID = createRecordID(from: recordIDString)
         
         do {
@@ -55,7 +58,9 @@ final class CloudKitService {
                 throw CloudKitError.audioDataNotFound
             }
             
-            return audioAsset
+            let url =  try await fetchAudioFileURL(audioAsset: audioAsset)
+            
+            return url
         } catch let error as CKError {
             if error.code == .unknownItem {
                 throw CloudKitError.recordNotFound
@@ -95,6 +100,15 @@ final class CloudKitService {
                 throw CloudKitError.networkError(error.localizedDescription)
             }
         }
+    }
+    
+    /// 특정 레코드 ID와 오디오 타입으로 fileURL 추출
+    private func fetchAudioFileURL(audioAsset: CKAsset) async throws -> URL {
+        guard let fileURL = audioAsset.fileURL else {
+            throw CloudKitError.audioDataNotFound
+        }
+        
+        return fileURL
     }
 
     private func createRecordID(from recordName: String) -> CKRecord.ID {
