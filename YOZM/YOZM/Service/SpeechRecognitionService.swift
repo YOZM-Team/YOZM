@@ -16,7 +16,9 @@ final class SpeechRecognitionService {
 
     private(set) var result: String? = nil
 
-    private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko-KR"))
+    private let recognizer = SFSpeechRecognizer(
+        locale: Locale(identifier: "ko-KR")
+    )
     private var audioEngine: AVAudioEngine? = nil
     private var request: SFSpeechAudioBufferRecognitionRequest? = nil
     private var task: SFSpeechRecognitionTask? = nil
@@ -26,23 +28,26 @@ final class SpeechRecognitionService {
             guard let recognizer, recognizer.isAvailable else {
                 return
             }
-            
+
             guard await hasPermissions() else {
                 return
             }
-            
+
             do {
                 try configureAudioSession()
             } catch {
                 print(error.localizedDescription)
                 return
             }
-            
+
             do {
                 try prepareEngine()
-                guard let audioEngine = self.audioEngine, let request = self.request else { return }
+                guard let audioEngine = self.audioEngine,
+                    let request = self.request
+                else { return }
 
-                self.task = recognizer.recognitionTask(with: request) { [weak self] result, error in
+                self.task = recognizer.recognitionTask(with: request) {
+                    [weak self] result, error in
                     self?.recognitionHandler(
                         audioEngine: audioEngine,
                         result: result,
@@ -69,7 +74,10 @@ final class SpeechRecognitionService {
         audioEngine = nil
 
         result = nil
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        try? AVAudioSession.sharedInstance().setActive(
+            false,
+            options: .notifyOthersOnDeactivation
+        )
     }
 
     private func recognitionHandler(
@@ -100,10 +108,8 @@ final class SpeechRecognitionService {
 
         let req = SFSpeechAudioBufferRecognitionRequest()
         req.shouldReportPartialResults = true
-        if #available(iOS 13.0, *) {
-            if let recognizer, recognizer.supportsOnDeviceRecognition {
-                req.requiresOnDeviceRecognition = true
-            }
+        if let recognizer, recognizer.supportsOnDeviceRecognition {
+            req.requiresOnDeviceRecognition = true
         }
 
         let inputNode = engine.inputNode
