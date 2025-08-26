@@ -43,32 +43,28 @@ final class CloudKitService {
         self.publicDatabase = container.publicCloudDatabase
     }
     
-    /// 특정 레코드 ID로 음성 데이터만 가져오기
+    /// 단일 음성 URL 가져오기 (word, sentence용)
     func fetchAudioData(recordIDString: String, audioType: AudioType) async throws -> URL {
-        let recordID = createRecordID(from: recordIDString)
+        let record = try await getRecord(recordIDString: recordIDString)
         
-        do {
-            let record = try await publicDatabase.record(for: recordID)
-            
-            guard record.recordType == cloudRecordType else {
-                throw CloudKitError.invalidRecordType
-            }
-            
-            guard let audioAsset = record[audioType.fieldName] as? CKAsset else {
-                throw CloudKitError.audioDataNotFound
-            }
-            
-            let url =  try await fetchAudioFileURL(audioAsset: audioAsset)
-            
-            return url
-        } catch let error as CKError {
-            if error.code == .unknownItem {
-                throw CloudKitError.recordNotFound
-            } else {
-                throw CloudKitError.networkError(error.localizedDescription)
-            }
+        guard let audioAsset = record[audioType.fieldName] as? CKAsset else {
+            throw CloudKitError.audioDataNotFound
         }
+        
+        return try fetchAudioFileURL(audioAsset: audioAsset)
     }
+    
+    /// 다중 음성 URL 가져오기 (dialogue용)
+    func fetchAudioDatas(recordIDString: String) async throws -> [URL] {
+        let record = try await getRecord(recordIDString: recordIDString)
+        
+        guard let audioAssets = record[AudioType.dialogue.fieldName] as? [CKAsset] else {
+            throw CloudKitError.audioDataNotFound
+        }
+        
+        return try fetchAudioFileURLs(audioAssets: audioAssets)
+    }
+    
     
     /// 특정 recordID의 데이터 조회
     func fetchAndPrintRecord(recordIDString: String) async throws -> WordAudioRecord {
@@ -102,15 +98,53 @@ final class CloudKitService {
         }
     }
     
-    /// 특정 레코드 ID와 오디오 타입으로 fileURL 추출
-    private func fetchAudioFileURL(audioAsset: CKAsset) async throws -> URL {
+    // 공통 레코드 가져오기 로직
+    private func getRecord(recordIDString: String) async throws -> CKRecord {
+        let recordID = createRecordID(from: recordIDString)
+        
+        do {
+            let record = try await publicDatabase.record(for: recordID)
+            
+            guard record.recordType == cloudRecordType else {
+                throw CloudKitError.invalidRecordType
+            }
+            
+            return record
+            
+        } catch let error as CKError {
+            if error.code == .unknownItem {
+                throw CloudKitError.recordNotFound
+            } else {
+                throw CloudKitError.networkError(error.localizedDescription)
+            }
+        }
+    }
+    
+    /// 단일 CKAsset에서 fileURL 추출
+    private func fetchAudioFileURL(audioAsset: CKAsset) throws -> URL {
         guard let fileURL = audioAsset.fileURL else {
             throw CloudKitError.audioDataNotFound
         }
-        
         return fileURL
     }
-
+    
+    /// CKAsset 배열에서 모든 fileURL 추출
+    private func fetchAudioFileURLs(audioAssets: [CKAsset]) throws -> [URL] {
+        var urls: [URL] = []
+        
+        for audioAsset in audioAssets {
+            if let fileURL = audioAsset.fileURL {
+                urls.append(fileURL)
+            }
+        }
+        
+        guard !urls.isEmpty else {
+            throw CloudKitError.audioDataNotFound
+        }
+        
+        return urls
+    }
+    
     private func createRecordID(from recordName: String) -> CKRecord.ID {
         return CKRecord.ID(recordName: recordName)
     }
