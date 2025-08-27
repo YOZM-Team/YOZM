@@ -21,3 +21,11 @@ enum AudioType {
         }
     }
 }
+
+enum CloudKitField: String, CaseIterable {
+    case id = "id"
+    case word = "word"
+    case meaning = "meaning"
+    case sampleSentence = "sampleSentence"
+    case sampleDialogue = "sampleDialogue"
+}

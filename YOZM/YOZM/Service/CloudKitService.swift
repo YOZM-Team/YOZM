@@ -14,6 +14,8 @@ enum CloudKitError: Error, LocalizedError {
     case audioURLNotFound
     case invalidRecordType
     case networkError(String)
+    case invalidFieldType(field: String, expected: String)
+    case missingField(field: String)
     
     var errorDescription: String {
         switch self {
@@ -27,6 +29,10 @@ enum CloudKitError: Error, LocalizedError {
             return "잘못된 레코드 타입입니다"
         case .networkError(let message):
             return "네트워크 오류: \(message)"
+        case .invalidFieldType(field: let field, expected: let expected):
+            return "필드 \(field)의 타입이 \(expected)이 아닙니다"
+        case .missingField(field: let field):
+            return "필드 \(field)가 누락되었습니다"
         }
     }
 }
@@ -77,7 +83,7 @@ final class CloudKitService {
                 throw CloudKitError.invalidRecordType
             }
             
-            let wordAudio = WordAudioRecord(from: record)
+            let wordAudio = try WordAudioRecord(from: record)
             
             print("=== CloudKit Record Data ===")
             print("Record ID: \(wordAudio.recordID)")
