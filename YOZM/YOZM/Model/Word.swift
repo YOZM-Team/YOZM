@@ -7,10 +7,11 @@
 
 import Foundation
 
-struct Word {
-    let id: UUID
+struct Word: Codable {
+    let id: Int64//Int64로 수정 
     let word: String
     let meaning: String
+    let pronunciation: String
     let sampleSentence: String
     let sampleDialogue: [String]
 }

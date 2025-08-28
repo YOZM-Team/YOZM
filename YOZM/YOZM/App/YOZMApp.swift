@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct YOZMApp: App {
@@ -19,7 +20,7 @@ struct YOZMApp: App {
 struct MainView: View {
     var body: some View {
         NavigationStack {
-            HomeView()
+            DevView()
         }
     }
 }

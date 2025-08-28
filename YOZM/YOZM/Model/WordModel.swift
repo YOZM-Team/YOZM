@@ -10,11 +10,11 @@ import SwiftData
 
 @Model
 final class WordModel {
-    var wordID: Int
+    var id: Int64
     var word: String
     
-    init(wordID: Int, word: String) {
-        self.wordID = wordID
+    init(id: Int64, word: String) {
+        self.id = id
         self.word = word
     }
 }
