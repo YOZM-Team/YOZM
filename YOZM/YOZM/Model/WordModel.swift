@@ -11,7 +11,7 @@ import SwiftData
 @Model
 final class WordModel {
     var id: Int64 = 0
-    var word: String = ""
+    var word: String = "Unknown"
     
     init(id: Int64, word: String) {
         self.id = id

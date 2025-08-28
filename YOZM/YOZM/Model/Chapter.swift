@@ -8,6 +8,6 @@
 import Foundation
 
 struct Chapter {
-    let id: UUID
+    let id: Int64
     let stages: [Stage]
 }
