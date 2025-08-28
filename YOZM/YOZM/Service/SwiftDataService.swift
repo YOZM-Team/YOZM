@@ -14,8 +14,6 @@ enum SwiftDataServiceError: Error {
     case fetchError(Error)
     case deleteError(Error)
     case wordNotFound
-    case jsonNotFound
-    case jsonDecodingError
     
     var errorDescription: String {
         switch self {
@@ -29,10 +27,6 @@ enum SwiftDataServiceError: Error {
             return "데이터 삭제에 실패했습니다: \(error.localizedDescription)"
         case .wordNotFound:
             return "단어를 찾을 수 없습니다"
-        case .jsonNotFound:
-            return "json 파일을 찾을 수 없습니다"
-        case .jsonDecodingError:
-            return "디코딩에 실패했습니다"
         }
     }
 }
@@ -52,21 +46,6 @@ final class SwiftDataService {
             self.modelContext = ModelContext(container)
         } catch {
             print("ModelContainer 생성 실패: \(error)")
-        }
-    }
-    
-    func loadWordsFromJSON() throws -> [Word] {
-        guard let url = Bundle.main.url(forResource: "sampleData", withExtension: "json") else {
-            throw SwiftDataServiceError.wordNotFound
-        }
-        
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        
-        do {
-            return try decoder.decode([Word].self, from: data)
-        } catch{
-            throw SwiftDataServiceError.jsonDecodingError
         }
     }
     

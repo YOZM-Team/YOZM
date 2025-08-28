@@ -53,30 +53,28 @@ struct DevView: View {
             let url = try await CloudKitService.shared.fetchAudioData(recordIDString: "CCE66256-9702-4974-B38E-5F3F5B8C6A54", audioType: .sentence)
             
             let urls = try await CloudKitService.shared.fetchAudioDatas(recordIDString: "CCE66256-9702-4974-B38E-5F3F5B8C6A54")
-            print("CloudKit 예문 오디오 url 조회: \(url)")
-            print("CloudKit dialogue 오디오 urls 조회: \(urls)")
+            print("\n CloudKit 예문 오디오 url 조회: \(url)")
+            print("\n CloudKit dialogue 오디오 urls 조회: \(urls)")
         }
     }
     
     private func testSwiftDataOperations() async {
         do {
-            // 1. JSON 파일에서 데이터 로드
-            let sampleWords = try SwiftDataService.shared.loadWordsFromJSON()
-            testResult += "\n JSON에서 \(sampleWords.count)개 단어 로드 완료"
             
-            // 2. SwiftData에 저장
+            let sampleWords = [WordModel(id: 1, word: "느좋"), WordModel(id: 2, word: "감다살")]
+            
+            // 1. SwiftData에 저장
             for sampleWord in sampleWords {
                 let wordModel = WordModel(id: sampleWord.id, word: sampleWord.word)
                 try SwiftDataService.shared.saveWord(wordModel)
             }
             testResult += "\n \(sampleWords.count)개 단어 저장 완료"
             
-            // 3. SwiftData에서 조회
+            // 2. SwiftData에서 조회
             let savedWords = try SwiftDataService.shared.fetchAllWords()
-            testResult += "\n \(savedWords.count)개 단어 조회 완료"
             
-            // 4. 개별 단어 조회 테스트
-            for savedWord in savedWords.prefix(3) {
+            // 3. 개별 단어 조회 테스트
+            for savedWord in savedWords {
                 let fetchedWord = try SwiftDataService.shared.fetchWord(by: savedWord.id)
                 testResult += "\nID \(fetchedWord.id): \(fetchedWord.word)"
             }
@@ -84,9 +82,9 @@ struct DevView: View {
             testResult += "\n\n 모든 테스트 완료!"
             
         } catch let error as SwiftDataServiceError {
-            testResult += "\n❌ SwiftData 에러: \(error.errorDescription)"
+            testResult += "\n SwiftData 에러: \(error.errorDescription)"
         } catch {
-            testResult += "\n❌ 일반 에러: \(error.localizedDescription)"
+            testResult += "\n 일반 에러: \(error.localizedDescription)"
         }
     }
 }

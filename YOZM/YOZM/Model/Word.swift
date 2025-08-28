@@ -8,7 +8,7 @@
 import Foundation
 
 struct Word: Codable {
-    let id: Int64//Int64로 수정 
+    let id: Int64
     let word: String
     let meaning: String
     let pronunciation: String
