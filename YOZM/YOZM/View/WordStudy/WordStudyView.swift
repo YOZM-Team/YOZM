@@ -67,30 +67,22 @@ struct WordStudyView: View {
     }
 
     private var dialogue: some View {
-        let viewModel = WordDialogueViewModel {
-            self.viewModel.setIsNextButtonEnabled(true)
-        }
+        let viewModel = WordDialogueViewModel(finishAction: viewModel.finishAction)
         return WordDialogueView(viewModel: viewModel)
     }
 
     private var explanation: some View {
-        let viewModel = WordExplanationViewModel {
-            self.viewModel.setIsNextButtonEnabled(true)
-        }
+        let viewModel = WordExplanationViewModel(finishAction: viewModel.finishAction)
         return WordExplanationView(viewModel: viewModel)
     }
 
     private var writingWord: some View {
-        let viewModel = WritingWordViewModel {
-            self.viewModel.setIsNextButtonEnabled(true)
-        }
+        let viewModel = WritingWordViewModel(finishAction: viewModel.finishAction)
         return WritingWordView(viewModel: viewModel)
     }
 
     private var speakingSentence: some View {
-        let viewModel = SpeakingSentenceViewModel {
-            self.viewModel.setIsNextButtonEnabled(true)
-        }
+        let viewModel = SpeakingSentenceViewModel(finishAction: viewModel.finishAction)
         return SpeakingSentenceView(viewModel: viewModel)
     }
 

@@ -54,10 +54,14 @@ enum WordStudyState {
 final class WordStudyViewModel {
     private(set) var wordStudyState: WordStudyState
     private(set) var isNextButtonEnabled: Bool
+    private(set) var finishAction: () -> Void
 
     init() {
         self.wordStudyState = .dialogue
         self.isNextButtonEnabled = false
+        self.finishAction = {
+            self.isNextButtonEnabled = true
+        }
     }
 
     func setIsNextButtonEnabled(_ isNextButtonEnabled: Bool) {
