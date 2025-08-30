@@ -8,6 +8,6 @@
 import Foundation
 
 struct Stage {
-    let id: UUID
+    let id: Int64
     let words: [Word]
 }
