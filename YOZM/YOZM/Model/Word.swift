@@ -13,5 +13,5 @@ struct Word: Codable {
     let meaning: String
     let pronunciation: String
     let sampleSentence: String
-    let sampleDialogue: [String]
+    let sampleDialogue: [Dialogue]
 }

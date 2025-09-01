@@ -16,6 +16,7 @@ enum CloudKitError: Error, LocalizedError {
     case networkError(String)
     case invalidFieldType(field: String, expected: String)
     case missingField(field: String)
+    case invalidData(String)
     
     var errorDescription: String {
         switch self {
@@ -33,6 +34,8 @@ enum CloudKitError: Error, LocalizedError {
             return "필드 \(field)의 타입이 \(expected)이 아닙니다"
         case .missingField(field: let field):
             return "필드 \(field)가 누락되었습니다"
+        case .invalidData(let message):
+            return "잘못된 데이터: \(message)"
         }
     }
 }
@@ -43,7 +46,7 @@ final class CloudKitService {
     
     private let container = CKContainer(identifier: "iCloud.com.company.YOZM")
     private let publicDatabase: CKDatabase
-    private let cloudRecordType = "WordAudio"
+    private let cloudRecordType = "WordRecord"
     
     private init() {
         self.publicDatabase = container.publicCloudDatabase
@@ -69,39 +72,6 @@ final class CloudKitService {
         }
         
         return try fetchAudioFileURLs(audioAssets: audioAssets)
-    }
-    
-    
-    /// 특정 recordID의 데이터 조회
-    func fetchAndPrintRecord(recordIDString: String) async throws -> WordAudioRecord {
-        let recordID = createRecordID(from: recordIDString)
-        
-        do {
-            let record = try await publicDatabase.record(for: recordID)
-            
-            guard record.recordType == cloudRecordType else {
-                throw CloudKitError.invalidRecordType
-            }
-            
-            let wordAudio = try WordAudioRecord(from: record)
-            
-            print("=== CloudKit Record Data ===")
-            print("Record ID: \(wordAudio.recordID)")
-            print("ID: \(wordAudio.id)")
-            print("Word: \(wordAudio.word)")
-            print("Meaning: \(wordAudio.meaning)")
-            print("Sample Sentence: \(wordAudio.sampleSentence)")
-            print("Sample Dialogues: \(wordAudio.sampleDialogue)")
-            print("============================")
-            
-            return wordAudio
-        } catch let error as CKError {
-            if error.code == .unknownItem {
-                throw CloudKitError.recordNotFound
-            } else {
-                throw CloudKitError.networkError(error.localizedDescription)
-            }
-        }
     }
     
     // 공통 레코드 가져오기 로직

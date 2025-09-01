@@ -13,7 +13,7 @@ struct WordAudioRecord {
     let word: String
     let meaning: String
     let sampleSentence: String
-    let sampleDialogue: [String]
+    let sampleDialogue: [Dialogue]
     
     init(from record: CKRecord) throws {
         recordID = record.recordID.recordName
