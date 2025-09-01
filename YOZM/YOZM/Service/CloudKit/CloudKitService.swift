@@ -38,136 +38,51 @@ struct ChapterData: Codable {
     let chapters: [Chapter]
 }
 
-class ChapterCloudKit {
+class CloudKitRecordWrapper {
     let record: CKRecord
-    
-    var id: Int64 {
-        return record["id"] as? Int64 ?? 0
-    }
-    
-    var title: String {
-        return record["title"] as? String ?? ""
-    }
-    
-    init(id: Int64, title: String) {
-        self.record = CKRecord(recordType: "ChapterRecord")
-        self.record["id"] = id as CKRecordValue
-        self.record["title"] = title as CKRecordValue
-    }
-    
+
     init(record: CKRecord) {
         self.record = record
     }
 }
 
+final class WordCloudKit: CloudKitRecordWrapper {
+    var id: Int64 { record["id"] as? Int64 ?? 0 }
+    var word: String { record["word"] as? String ?? "" }
+    var meaning: String { record["meaning"] as? String ?? "" }
+    var pronunciation: String { record["pronunciation"] as? String ?? "" }
+    var sampleSentence: String { record["sampleSentence"] as? String ?? "" }
+    var sampleDialogue: [String] { record["sampleDialogue"] as? [String] ?? [] }
+    var stageReference: CKRecord.Reference? { record["stageReference"] as? CKRecord.Reference }
 
-
-
-class StageCloudKit {
-    let record: CKRecord
-    
-    var id: Int64 {
-        return record["id"] as? Int64 ?? 0
-    }
-    
-    var title: String {
-        return record["title"] as? String ?? ""
-    }
-    
-    var chapterReference: CKRecord.Reference? {
-        return record["chapterReference"] as? CKRecord.Reference
-    }
-    
-    init(id: Int64, title: String, chapterRecord: CKRecord) {
-        self.record = CKRecord(recordType: "StageRecord")
-        self.record["id"] = id as CKRecordValue
-        self.record["title"] = title as CKRecordValue
-        self.record["chapterReference"] = CKRecord.Reference(record: chapterRecord, action: .deleteSelf)
-    }
-    
-    init(record: CKRecord) {
-        self.record = record
-    }
-}
-
-class WordCloudKit {
-    let record: CKRecord
-    
-    var id: Int64 {
-        return record["id"] as? Int64 ?? 0
-    }
-    
-    var word: String {
-        return record["word"] as? String ?? ""
-    }
-    
-    var meaning: String {
-        return record["meaning"] as? String ?? ""
-    }
-    
-    var pronunciation: String {
-        return record["pronunciation"] as? String ?? ""
-    }
-    
-    var sampleSentence: String {
-        return record["sampleSentence"] as? String ?? ""
-    }
-    
-    var sampleDialogue: [String] {
-        return record["sampleDialogue"] as? [String] ?? []
-    }
-    
-    var stageReference: CKRecord.Reference? {
-        return record["stageReference"] as? CKRecord.Reference
-    }
-    
     init(id: Int64, word: String, meaning: String, pronunciation: String,
          sampleSentence: String, sampleDialogue: [String], stageRecord: CKRecord) {
         
-        self.record = CKRecord(recordType: "WordRecord")
-        self.record["id"] = id as CKRecordValue
-        self.record["word"] = word as CKRecordValue
-        self.record["meaning"] = meaning as CKRecordValue
-        self.record["pronunciation"] = pronunciation as CKRecordValue
-        self.record["sampleSentence"] = sampleSentence as CKRecordValue
-        self.record["sampleDialogue"] = sampleDialogue as CKRecordValue
-        self.record["stageReference"] = CKRecord.Reference(record: stageRecord, action: .deleteSelf)
-    }
-    
-    init(record: CKRecord) {
-        self.record = record
+        let ckRecord = CKRecord(recordType: "WordRecord")
+        ckRecord["id"] = id as CKRecordValue
+        ckRecord["word"] = word as CKRecordValue
+        ckRecord["meaning"] = meaning as CKRecordValue
+        ckRecord["pronunciation"] = pronunciation as CKRecordValue
+        ckRecord["sampleSentence"] = sampleSentence as CKRecordValue
+        ckRecord["sampleDialogue"] = sampleDialogue as CKRecordValue
+        ckRecord["stageReference"] = CKRecord.Reference(record: stageRecord, action: .deleteSelf)
+        super.init(record: ckRecord)
     }
 }
+    
+final class DialogueCloudKit: CloudKitRecordWrapper {
+    var id: Int64 { record["id"] as? Int64 ?? 0 }
+    var sentence: String { record["sentence"] as? String ?? "" }
+    var speakerType: Int64 { record["speakerType"] as? Int64 ?? 0 }
+    var wordReference: CKRecord.Reference? { record["wordReference"] as? CKRecord.Reference }
 
-class DialogueCloudKit {
-    let record: CKRecord
-    
-    var id: Int64 {
-        return record["id"] as? Int64 ?? 0
-    }
-    
-    var sentence: String {
-        return record["sentence"] as? String ?? ""
-    }
-    
-    var speakerType: Int64 {
-        return record["speakerType"] as? Int64 ?? 0
-    }
-    
-    var wordReference: CKRecord.Reference? {
-        return record["wordReference"] as? CKRecord.Reference
-    }
-    
     init(id: Int64, sentence: String, speakerType: Int64, wordRecord: CKRecord) {
-        self.record = CKRecord(recordType: "DialogueRecord")
-        self.record["id"] = id as CKRecordValue
-        self.record["sentence"] = sentence as CKRecordValue
-        self.record["speakerType"] = speakerType as CKRecordValue
-        self.record["wordReference"] = CKRecord.Reference(record: wordRecord, action: .deleteSelf)
-    }
-    
-    init(record: CKRecord) {
-        self.record = record
+        let ckRecord = CKRecord(recordType: "DialogueRecord")
+        ckRecord["id"] = id as CKRecordValue
+        ckRecord["sentence"] = sentence as CKRecordValue
+        ckRecord["speakerType"] = speakerType as CKRecordValue
+        ckRecord["wordReference"] = CKRecord.Reference(record: wordRecord, action: .deleteSelf)
+        super.init(record: ckRecord)
     }
 }
 
