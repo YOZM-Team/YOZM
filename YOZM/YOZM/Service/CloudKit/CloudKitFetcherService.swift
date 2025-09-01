@@ -16,26 +16,29 @@ final class CloudKitFetcherService {
         self.publicDatabase = container.publicCloudDatabase
     }
 
-    // MARK: - Public Methods
     func fetchChapter(by id: Int64) async throws -> Chapter {
-        let chapterRecord = try await fetchRecord(
-            recordType: CloudKitType.chapterRecordType,
-            predicate: NSPredicate(format: "id == %lld", id)
-        )
-        
-        let chapterCloudKit = ChapterCloudKit(record: chapterRecord)
-        let stages = try await fetchStages(for: chapterRecord)
-        
-        print("[CloudKit] 챕터 조회 완료 - 제목: \(String(describing: chapterCloudKit.title))")
-        
-        return Chapter(
-            id: try chapterCloudKit.id(),
-            title: try chapterCloudKit.title(),
-            stages: stages
-        )
+        do {
+            let chapterRecord = try await fetchRecord(
+                recordType: CloudKitType.chapterRecordType,
+                predicate: NSPredicate(format: "id == %lld", id)
+            )
+            let chapterCloudKit = ChapterCloudKit(record: chapterRecord)
+            let stages = try await fetchStages(for: chapterRecord)
+            
+            let title = try chapterCloudKit.title()
+            print("[CloudKit] 챕터 조회 완료 - 제목: \(title)")
+            
+            return Chapter(
+                id: try chapterCloudKit.id(),
+                title: title,
+                stages: stages
+            )
+        } catch {
+            print("[CloudKit] 챕터 조회 중 오류 발생: \(error.localizedDescription)")
+            throw error
+        }
     }
     
-    // MARK: - Private Helper Methods
     private func fetchRecord(recordType: String, predicate: NSPredicate) async throws -> CKRecord {
         let query = CKQuery(recordType: recordType, predicate: predicate)
         let (results, _) = try await publicDatabase.records(matching: query)
@@ -102,11 +105,11 @@ final class CloudKitFetcherService {
             let dialogues = try await self.fetchDialogues(for: wordRecord)
             
             return Word(
-                id: wordCloudKit.id,
-                word: wordCloudKit.word,
-                meaning: wordCloudKit.meaning,
-                pronunciation: wordCloudKit.pronunciation,
-                sampleSentence: wordCloudKit.sampleSentence,
+                id: try wordCloudKit.id(),
+                word: try wordCloudKit.word(),
+                meaning: try wordCloudKit.meaning(),
+                pronunciation: try wordCloudKit.pronunciation(),
+                sampleSentence: try wordCloudKit.sampleSentence(),
                 sampleDialogue: dialogues
             )
         }
