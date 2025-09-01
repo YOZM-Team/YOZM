@@ -40,12 +40,10 @@ enum CloudKitError: Error, LocalizedError {
     }
 }
 
-// MARK: - JSON 데이터 구조
 struct ChapterData: Codable {
     let chapters: [Chapter]
 }
 
-// MARK: - CloudKit 래퍼 클래스들
 class ChapterCloudKit {
     let record: CKRecord
     
@@ -175,4 +173,3 @@ class DialogueCloudKit {
         self.record = record
     }
 }
-
