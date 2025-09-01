@@ -41,7 +41,7 @@ struct DevView: View {
         }
         .onAppear{
             Task {
-                try await CloudKitService.shared.fetchChapter(by: 1)
+//                try await CloudKitService.shared.fetchChapter(by: 1)
 //                try await CloudKitDataManager.shared.upload()
             }
         }

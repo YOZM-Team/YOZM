@@ -31,14 +31,6 @@ enum CloudKitError: Error, LocalizedError {
     }
 }
 
-class CloudKitRecordWrapper {
-    let record: CKRecord
-
-    init(record: CKRecord) {
-        self.record = record
-    }
-}
-
 final class CloudKitService {
     private let uploader = CloudKitUploaderService()
     private let fetcher = CloudKitFetcherService()
