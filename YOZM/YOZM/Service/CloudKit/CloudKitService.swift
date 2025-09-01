@@ -12,7 +12,6 @@ enum CloudKitError: Error, LocalizedError {
     case recordNotFound
     case audioDataNotFound
     case audioURLNotFound
-    case invalidFieldType(field: String, expected: String)
     case missingField(field: String)
     case invalidData(String)
     
@@ -24,8 +23,6 @@ enum CloudKitError: Error, LocalizedError {
             return "음성 데이터를 찾을 수 없습니다"
         case .audioURLNotFound:
             return "음성 파일 URL을 찾을 수 없습니다"
-        case .invalidFieldType(field: let field, expected: let expected):
-            return "필드 \(field)의 타입이 \(expected)이 아닙니다"
         case .missingField(field: let field):
             return "필드 \(field)가 누락되었습니다"
         case .invalidData(let message):
@@ -34,55 +31,11 @@ enum CloudKitError: Error, LocalizedError {
     }
 }
 
-struct ChapterData: Codable {
-    let chapters: [Chapter]
-}
-
 class CloudKitRecordWrapper {
     let record: CKRecord
 
     init(record: CKRecord) {
         self.record = record
-    }
-}
-
-final class WordCloudKit: CloudKitRecordWrapper {
-    var id: Int64 { record["id"] as? Int64 ?? 0 }
-    var word: String { record["word"] as? String ?? "" }
-    var meaning: String { record["meaning"] as? String ?? "" }
-    var pronunciation: String { record["pronunciation"] as? String ?? "" }
-    var sampleSentence: String { record["sampleSentence"] as? String ?? "" }
-    var sampleDialogue: [String] { record["sampleDialogue"] as? [String] ?? [] }
-    var stageReference: CKRecord.Reference? { record["stageReference"] as? CKRecord.Reference }
-
-    init(id: Int64, word: String, meaning: String, pronunciation: String,
-         sampleSentence: String, sampleDialogue: [String], stageRecord: CKRecord) {
-        
-        let ckRecord = CKRecord(recordType: "WordRecord")
-        ckRecord["id"] = id as CKRecordValue
-        ckRecord["word"] = word as CKRecordValue
-        ckRecord["meaning"] = meaning as CKRecordValue
-        ckRecord["pronunciation"] = pronunciation as CKRecordValue
-        ckRecord["sampleSentence"] = sampleSentence as CKRecordValue
-        ckRecord["sampleDialogue"] = sampleDialogue as CKRecordValue
-        ckRecord["stageReference"] = CKRecord.Reference(record: stageRecord, action: .deleteSelf)
-        super.init(record: ckRecord)
-    }
-}
-    
-final class DialogueCloudKit: CloudKitRecordWrapper {
-    var id: Int64 { record["id"] as? Int64 ?? 0 }
-    var sentence: String { record["sentence"] as? String ?? "" }
-    var speakerType: Int64 { record["speakerType"] as? Int64 ?? 0 }
-    var wordReference: CKRecord.Reference? { record["wordReference"] as? CKRecord.Reference }
-
-    init(id: Int64, sentence: String, speakerType: Int64, wordRecord: CKRecord) {
-        let ckRecord = CKRecord(recordType: "DialogueRecord")
-        ckRecord["id"] = id as CKRecordValue
-        ckRecord["sentence"] = sentence as CKRecordValue
-        ckRecord["speakerType"] = speakerType as CKRecordValue
-        ckRecord["wordReference"] = CKRecord.Reference(record: wordRecord, action: .deleteSelf)
-        super.init(record: ckRecord)
     }
 }
 

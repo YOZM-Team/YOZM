@@ -7,6 +7,10 @@
 
 import Foundation
 
+struct ChapterData: Codable {
+    let chapters: [Chapter]
+}
+
 struct Chapter: Codable{
     let id: Int64
     let title: String

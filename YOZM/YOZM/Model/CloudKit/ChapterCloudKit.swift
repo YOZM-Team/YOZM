@@ -7,14 +7,30 @@
 
 import CloudKit
 
-final class ChapterCloudKit: CloudKitRecordWrapper {
-    var id: Int64 { record["id"] as? Int64 ?? 0 }
-    var title: String { record["title"] as? String ?? "" }
+final class ChapterCloudKit {
+    let record: CKRecord
+
+    func id() throws -> Int64 {
+        guard let value = record[CloudKitField.id.rawValue] as? Int64 else {
+            throw CloudKitError.missingField(field: CloudKitField.id.rawValue)
+        }
+        return value
+    }
+
+    func title() throws -> String {
+        guard let value = record[CloudKitField.title.rawValue] as? String else {
+            throw CloudKitError.missingField(field: CloudKitField.title.rawValue)
+        }
+        return value
+    }
 
     init(id: Int64, title: String) {
-        let ckRecord = CKRecord(recordType: "ChapterRecord")
-        ckRecord["id"] = id as CKRecordValue
-        ckRecord["title"] = title as CKRecordValue
-        super.init(record: ckRecord)
+        self.record = CKRecord(recordType: CloudKitType.chapterRecordType)
+        self.record[CloudKitField.id.rawValue] = id as CKRecordValue
+        self.record[CloudKitField.title.rawValue] = title as CKRecordValue
+    }
+
+    init(record: CKRecord) {
+        self.record = record
     }
 }

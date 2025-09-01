@@ -19,18 +19,18 @@ final class CloudKitFetcherService {
     // MARK: - Public Methods
     func fetchChapter(by id: Int64) async throws -> Chapter {
         let chapterRecord = try await fetchRecord(
-            recordType: CloudKitConstants.chapterRecordType,
+            recordType: CloudKitType.chapterRecordType,
             predicate: NSPredicate(format: "id == %lld", id)
         )
         
         let chapterCloudKit = ChapterCloudKit(record: chapterRecord)
         let stages = try await fetchStages(for: chapterRecord)
         
-        print("[CloudKit] 챕터 조회 완료 - 제목: \(chapterCloudKit.title)")
+        print("[CloudKit] 챕터 조회 완료 - 제목: \(String(describing: chapterCloudKit.title))")
         
         return Chapter(
-            id: chapterCloudKit.id,
-            title: chapterCloudKit.title,
+            id: try chapterCloudKit.id(),
+            title: try chapterCloudKit.title(),
             stages: stages
         )
     }
@@ -69,7 +69,7 @@ final class CloudKitFetcherService {
     
     private func fetchStages(for chapterRecord: CKRecord) async throws -> [Stage] {
         let stageRecords = try await fetchRecords(
-            recordType: CloudKitConstants.stageRecordType,
+            recordType: CloudKitType.stageRecordType,
             predicate: NSPredicate(format: "chapterReference == %@", chapterRecord),
             sortBy: "id"
         )
@@ -79,8 +79,8 @@ final class CloudKitFetcherService {
             let words = try await self.fetchWords(for: stageRecord)
             
             return Stage(
-                id: stageCloudKit.id,
-                title: stageCloudKit.title,
+                id: try stageCloudKit.id(),
+                title: try stageCloudKit.title(),
                 words: words
             )
         }
@@ -93,7 +93,7 @@ final class CloudKitFetcherService {
     
     private func fetchWords(for stageRecord: CKRecord) async throws -> [Word] {
         let wordRecords = try await fetchRecords(
-            recordType: CloudKitConstants.wordRecordType,
+            recordType: CloudKitType.wordRecordType,
             predicate: NSPredicate(format: "stageReference == %@", stageRecord)
         )
         
@@ -119,18 +119,19 @@ final class CloudKitFetcherService {
     
     private func fetchDialogues(for wordRecord: CKRecord) async throws -> [Dialogue] {
         let dialogueRecords = try await fetchRecords(
-            recordType: CloudKitConstants.dialogueRecordType,
+            recordType: CloudKitType.dialogueRecordType,
             predicate: NSPredicate(format: "wordReference == %@", wordRecord)
         )
         
-        let dialogues = dialogueRecords.map { dialogueRecord in
+        let dialogues: [Dialogue] = try dialogueRecords.map { dialogueRecord in
             let dialogueCloudKit = DialogueCloudKit(record: dialogueRecord)
             return Dialogue(
-                id: dialogueCloudKit.id,
-                speakerType: dialogueCloudKit.speakerType,
-                sentence: dialogueCloudKit.sentence
+                id: try dialogueCloudKit.id(),
+                speakerType: try dialogueCloudKit.speakerType(),
+                sentence: try dialogueCloudKit.sentence()
             )
         }
+        
         let sortedDialogues = dialogues.sorted { $0.id < $1.id }
         print("[CloudKit] 대화문 조회 완료 - 총 \(sortedDialogues.count)개")
         

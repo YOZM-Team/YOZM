@@ -8,7 +8,7 @@
 import CloudKit
 
 final class CloudKitAudioService {
-    private let container = CKContainer(identifier: CloudKitConstants.containerIdentifier)
+    private let container = CKContainer.default()
     private let publicDatabase: CKDatabase
     
     init() {
@@ -36,7 +36,7 @@ final class CloudKitAudioService {
     /// Dialogue ID로 특정 dialogue asset URL 가져오기
     func fetchDialogueAudioURL(dialogueId: Int64) async throws -> URL {
         let dialogueQuery = CKQuery(
-            recordType: CloudKitConstants.dialogueRecordType,
+            recordType: CloudKitType.dialogueRecordType,
             predicate: NSPredicate(format: "id == %lld", dialogueId)
         )
         
@@ -52,7 +52,7 @@ final class CloudKitAudioService {
     
     private func fetchWordRecord(by wordId: Int64) async throws -> CKRecord {
         let wordQuery = CKQuery(
-            recordType: CloudKitConstants.wordRecordType,
+            recordType: CloudKitType.wordRecordType,
             predicate: NSPredicate(format: "id == %lld", wordId)
         )
         
