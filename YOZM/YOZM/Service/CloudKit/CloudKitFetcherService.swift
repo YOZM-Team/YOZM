@@ -20,7 +20,7 @@ final class CloudKitFetcherService {
         do {
             let chapterRecord = try await fetchRecord(
                 recordType: CloudKitType.chapterRecordType,
-                predicate: NSPredicate(format: "id == %lld", id)
+                predicate: NSPredicate(format: "\(CloudKitField.id.rawValue) == %lld", id)
             )
             let chapterCloudKit = ChapterCloudKit(record: chapterRecord)
             let stages = try await fetchStages(for: chapterRecord)
@@ -73,7 +73,7 @@ final class CloudKitFetcherService {
     private func fetchStages(for chapterRecord: CKRecord) async throws -> [Stage] {
         let stageRecords = try await fetchRecords(
             recordType: CloudKitType.stageRecordType,
-            predicate: NSPredicate(format: "chapterReference == %@", chapterRecord),
+            predicate: NSPredicate(format: "\(CloudKitField.chapterReference.rawValue) == %@", chapterRecord),
             sortBy: "id"
         )
         
@@ -97,7 +97,7 @@ final class CloudKitFetcherService {
     private func fetchWords(for stageRecord: CKRecord) async throws -> [Word] {
         let wordRecords = try await fetchRecords(
             recordType: CloudKitType.wordRecordType,
-            predicate: NSPredicate(format: "stageReference == %@", stageRecord)
+            predicate: NSPredicate(format: "\(CloudKitField.stageReference.rawValue) == %@", stageRecord)
         )
         
         let words = try await processRecordsConcurrently(wordRecords) { wordRecord in
@@ -123,7 +123,7 @@ final class CloudKitFetcherService {
     private func fetchDialogues(for wordRecord: CKRecord) async throws -> [Dialogue] {
         let dialogueRecords = try await fetchRecords(
             recordType: CloudKitType.dialogueRecordType,
-            predicate: NSPredicate(format: "wordReference == %@", wordRecord)
+            predicate: NSPredicate(format: "\(CloudKitField.wordReference.rawValue) == %@", wordRecord)
         )
         
         let dialogues: [Dialogue] = try dialogueRecords.map { dialogueRecord in
