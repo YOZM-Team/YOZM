@@ -26,7 +26,7 @@ final class CloudKitFetcherService {
             let stages = try await fetchStages(for: chapterRecord)
             
             let title = try chapterCloudKit.title()
-            print("[CloudKit] 챕터 조회 완료 - 제목: \(title)")
+            print("[CloudKitFetcher] 챕터 조회 완료 - 제목: \(title)")
             
             return Chapter(
                 id: try chapterCloudKit.id(),
@@ -34,7 +34,7 @@ final class CloudKitFetcherService {
                 stages: stages
             )
         } catch {
-            print("[CloudKit] 챕터 조회 중 오류 발생: \(error.localizedDescription)")
+            print("[CloudKitFetcher] 챕터 조회 중 오류 발생: \(error.localizedDescription)")
             throw error
         }
     }
@@ -74,7 +74,7 @@ final class CloudKitFetcherService {
         let stageRecords = try await fetchRecords(
             recordType: CloudKitType.stageRecordType,
             predicate: NSPredicate(format: "\(CloudKitField.chapterReference.rawValue) == %@", chapterRecord),
-            sortBy: "id"
+            sortBy: "\(CloudKitField.id.rawValue)"
         )
         
         let stages = try await processRecordsConcurrently(stageRecords) { stageRecord in
@@ -88,16 +88,16 @@ final class CloudKitFetcherService {
             )
         }
         
-        let sortedStages = stages.sorted { $0.id < $1.id }
-        print("[CloudKit] 스테이지 조회 완료 - 총 \(sortedStages.count)개")
+        print("[CloudKitFetcher] 스테이지 조회 완료 - 총 \(stages.count)개")
         
-        return sortedStages
+        return stages
     }
     
     private func fetchWords(for stageRecord: CKRecord) async throws -> [Word] {
         let wordRecords = try await fetchRecords(
             recordType: CloudKitType.wordRecordType,
-            predicate: NSPredicate(format: "\(CloudKitField.stageReference.rawValue) == %@", stageRecord)
+            predicate: NSPredicate(format: "\(CloudKitField.stageReference.rawValue) == %@", stageRecord),
+            sortBy: "\(CloudKitField.id.rawValue)"
         )
         
         let words = try await processRecordsConcurrently(wordRecords) { wordRecord in
@@ -114,16 +114,16 @@ final class CloudKitFetcherService {
             )
         }
         
-        let sortedWords = words.sorted { $0.id < $1.id }
-        print("[CloudKit] 단어 조회 완료 - 총 \(sortedWords.count)개")
+        print("[CloudKitFetcher] 단어 조회 완료 - 총 \(words.count)개")
         
-        return sortedWords
+        return words
     }
     
     private func fetchDialogues(for wordRecord: CKRecord) async throws -> [Dialogue] {
         let dialogueRecords = try await fetchRecords(
             recordType: CloudKitType.dialogueRecordType,
-            predicate: NSPredicate(format: "\(CloudKitField.wordReference.rawValue) == %@", wordRecord)
+            predicate: NSPredicate(format: "\(CloudKitField.wordReference.rawValue) == %@", wordRecord),
+            sortBy: "\(CloudKitField.id.rawValue)"
         )
         
         let dialogues: [Dialogue] = try dialogueRecords.map { dialogueRecord in
@@ -135,10 +135,9 @@ final class CloudKitFetcherService {
             )
         }
         
-        let sortedDialogues = dialogues.sorted { $0.id < $1.id }
-        print("[CloudKit] 대화문 조회 완료 - 총 \(sortedDialogues.count)개")
+        print("[CloudKitFetcher] 대화문 조회 완료 - 총 \(dialogues.count)개")
         
-        return dialogues.sorted { $0.id < $1.id }
+        return dialogues
     }
     
     private func processRecordsConcurrently<T>(_ records: [CKRecord], transform: @escaping (CKRecord) async throws -> T) async throws -> [T] {
