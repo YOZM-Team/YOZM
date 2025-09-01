@@ -1,13 +1,14 @@
 //
-//  CloudKitPublicUploader.swift
+//  CloudKitUploaderService.swift
 //  YOZM
 //
 //  Created by 최희진 on 9/1/25.
 //
 
 import Foundation
+import CloudKit
 
-final class CloudKitPublicUploader {
+final class CloudKitUploaderService {
     private let container = CKContainer.default()
     private let publicDatabase: CKDatabase
     

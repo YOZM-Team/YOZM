@@ -40,93 +40,139 @@ enum CloudKitError: Error, LocalizedError {
     }
 }
 
-// MARK: - Constants
-private enum CloudKitConstants {
-    static let containerIdentifier = "iCloud.com.company.YOZM"
-    static let wordRecordType = "WordRecord"
-    static let chapterRecordType = "ChapterRecord"
-    static let stageRecordType = "StageRecord"
-    static let dialogueRecordType = "DialogueRecord"
+// MARK: - JSON 데이터 구조
+struct ChapterData: Codable {
+    let chapters: [Chapter]
 }
 
-// MARK: - CloudKit Service
-final class CloudKitService {
-    static let shared = CloudKitService()
+// MARK: - CloudKit 래퍼 클래스들
+class ChapterCloudKit {
+    let record: CKRecord
     
-    private let container = CKContainer(identifier: CloudKitConstants.containerIdentifier)
-    private let publicDatabase: CKDatabase
-    
-    private init() {
-        self.publicDatabase = container.publicCloudDatabase
+    var id: Int64 {
+        return record["id"] as? Int64 ?? 0
     }
     
-    /// 단일 음성 URL 가져오기 (word, sentence용)
-    func fetchAudioData(recordIDString: String, audioType: AudioType) async throws -> URL {
-        let record = try await getRecord(recordIDString: recordIDString)
-        
-        guard let audioAsset = record[audioType.fieldName] as? CKAsset else {
-            throw CloudKitError.audioDataNotFound
-        }
-        
-        return try fetchAudioFileURL(audioAsset: audioAsset)
+    var title: String {
+        return record["title"] as? String ?? ""
     }
     
-    /// 다중 음성 URL 가져오기 (dialogue용)
-    func fetchAudioDatas(recordIDString: String) async throws -> [URL] {
-        let record = try await getRecord(recordIDString: recordIDString)
-        
-        guard let audioAssets = record[AudioType.dialogue.fieldName] as? [CKAsset] else {
-            throw CloudKitError.audioDataNotFound
-        }
-        
-        return try fetchAudioFileURLs(audioAssets: audioAssets)
+    init(id: Int64, title: String) {
+        self.record = CKRecord(recordType: "ChapterRecord")
+        self.record["id"] = id as CKRecordValue
+        self.record["title"] = title as CKRecordValue
     }
     
-    // 공통 레코드 가져오기 로직
-    private func getRecord(recordIDString: String) async throws -> CKRecord {
-        let recordID = CKRecord.ID(recordName: recordIDString)
-        
-        do {
-            let record = try await publicDatabase.record(for: recordID)
-            
-            guard record.recordType == CloudKitConstants.wordRecordType else {
-                throw CloudKitError.invalidRecordType
-            }
-            
-            return record
-            
-        } catch let error as CKError {
-            if error.code == .unknownItem {
-                throw CloudKitError.recordNotFound
-            } else {
-                throw CloudKitError.networkError(error.localizedDescription)
-            }
-        }
+    init(record: CKRecord) {
+        self.record = record
     }
-    
-    /// 단일 CKAsset에서 fileURL 추출
-    private func fetchAudioFileURL(audioAsset: CKAsset) throws -> URL {
-        guard let fileURL = audioAsset.fileURL else {
-            throw CloudKitError.audioURLNotFound
-        }
-        return fileURL
-    }
-    
-    /// CKAsset 배열에서 모든 fileURL 추출
-    private func fetchAudioFileURLs(audioAssets: [CKAsset]) throws -> [URL] {
-        var urls: [URL] = []
-        
-        for audioAsset in audioAssets {
-            if let fileURL = audioAsset.fileURL {
-                urls.append(fileURL)
-            }
-        }
-        
-        guard !urls.isEmpty else {
-            throw CloudKitError.audioDataNotFound
-        }
-        
-        return urls
-    }
-
 }
+
+class StageCloudKit {
+    let record: CKRecord
+    
+    var id: Int64 {
+        return record["id"] as? Int64 ?? 0
+    }
+    
+    var title: String {
+        return record["title"] as? String ?? ""
+    }
+    
+    var chapterReference: CKRecord.Reference? {
+        return record["chapterReference"] as? CKRecord.Reference
+    }
+    
+    init(id: Int64, title: String, chapterRecord: CKRecord) {
+        self.record = CKRecord(recordType: "StageRecord")
+        self.record["id"] = id as CKRecordValue
+        self.record["title"] = title as CKRecordValue
+        self.record["chapterReference"] = CKRecord.Reference(record: chapterRecord, action: .deleteSelf)
+    }
+    
+    init(record: CKRecord) {
+        self.record = record
+    }
+}
+
+class WordCloudKit {
+    let record: CKRecord
+    
+    var id: Int64 {
+        return record["id"] as? Int64 ?? 0
+    }
+    
+    var word: String {
+        return record["word"] as? String ?? ""
+    }
+    
+    var meaning: String {
+        return record["meaning"] as? String ?? ""
+    }
+    
+    var pronunciation: String {
+        return record["pronunciation"] as? String ?? ""
+    }
+    
+    var sampleSentence: String {
+        return record["sampleSentence"] as? String ?? ""
+    }
+    
+    var sampleDialogue: [String] {
+        return record["sampleDialogue"] as? [String] ?? []
+    }
+    
+    var stageReference: CKRecord.Reference? {
+        return record["stageReference"] as? CKRecord.Reference
+    }
+    
+    init(id: Int64, word: String, meaning: String, pronunciation: String,
+         sampleSentence: String, sampleDialogue: [String], stageRecord: CKRecord) {
+        
+        self.record = CKRecord(recordType: "WordRecord")
+        self.record["id"] = id as CKRecordValue
+        self.record["word"] = word as CKRecordValue
+        self.record["meaning"] = meaning as CKRecordValue
+        self.record["pronunciation"] = pronunciation as CKRecordValue
+        self.record["sampleSentence"] = sampleSentence as CKRecordValue
+        self.record["sampleDialogue"] = sampleDialogue as CKRecordValue
+        self.record["stageReference"] = CKRecord.Reference(record: stageRecord, action: .deleteSelf)
+    }
+    
+    init(record: CKRecord) {
+        self.record = record
+    }
+}
+
+class DialogueCloudKit {
+    let record: CKRecord
+    
+    var id: Int64 {
+        return record["id"] as? Int64 ?? 0
+    }
+    
+    var sentence: String {
+        return record["sentence"] as? String ?? ""
+    }
+    
+    var speakerType: Int64 {
+        return record["speakerType"] as? Int64 ?? 0
+    }
+    
+    var wordReference: CKRecord.Reference? {
+        return record["wordReference"] as? CKRecord.Reference
+    }
+    
+    init(id: Int64, sentence: String, speakerType: Int64, wordRecord: CKRecord) {
+        self.record = CKRecord(recordType: "DialogueRecord")
+        self.record["id"] = id as CKRecordValue
+        self.record["sentence"] = sentence as CKRecordValue
+        self.record["speakerType"] = speakerType as CKRecordValue
+        self.record["wordReference"] = CKRecord.Reference(record: wordRecord, action: .deleteSelf)
+    }
+    
+    init(record: CKRecord) {
+        self.record = record
+    }
+}
+

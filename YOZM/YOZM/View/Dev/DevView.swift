@@ -41,20 +41,8 @@ struct DevView: View {
         }
         .onAppear{
             Task {
-                await fetchCloudKitData()
+                try await CloudKitDataManager.shared.fetchChapter(by: 1)
             }
-        }
-    }
-    
-    private func fetchCloudKitData() async {
-        Task{
-            let _ = try await CloudKitService.shared.fetchAndPrintRecord(recordIDString: "CCE66256-9702-4974-B38E-5F3F5B8C6A54")
-            
-            let url = try await CloudKitService.shared.fetchAudioData(recordIDString: "CCE66256-9702-4974-B38E-5F3F5B8C6A54", audioType: .sentence)
-            
-            let urls = try await CloudKitService.shared.fetchAudioDatas(recordIDString: "CCE66256-9702-4974-B38E-5F3F5B8C6A54")
-            print("\n CloudKit 예문 오디오 url 조회: \(url)")
-            print("\n CloudKit dialogue 오디오 urls 조회: \(urls)")
         }
     }
     

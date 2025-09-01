@@ -29,3 +29,11 @@ enum CloudKitField: String, CaseIterable {
     case sampleSentence = "sampleSentence"
     case sampleDialogue = "sampleDialogue"
 }
+
+enum CloudKitConstants {
+    static let containerIdentifier = "iCloud.com.company.YOZM"
+    static let wordRecordType = "WordRecord"
+    static let chapterRecordType = "ChapterRecord"
+    static let stageRecordType = "StageRecord"
+    static let dialogueRecordType = "DialogueRecord"
+}
