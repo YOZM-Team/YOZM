@@ -40,13 +40,21 @@ enum CloudKitError: Error, LocalizedError {
     }
 }
 
+// MARK: - Constants
+private enum CloudKitConstants {
+    static let containerIdentifier = "iCloud.com.company.YOZM"
+    static let wordRecordType = "WordRecord"
+    static let chapterRecordType = "ChapterRecord"
+    static let stageRecordType = "StageRecord"
+    static let dialogueRecordType = "DialogueRecord"
+}
+
 // MARK: - CloudKit Service
 final class CloudKitService {
     static let shared = CloudKitService()
     
-    private let container = CKContainer(identifier: "iCloud.com.company.YOZM")
+    private let container = CKContainer(identifier: CloudKitConstants.containerIdentifier)
     private let publicDatabase: CKDatabase
-    private let cloudRecordType = "WordRecord"
     
     private init() {
         self.publicDatabase = container.publicCloudDatabase
@@ -76,12 +84,12 @@ final class CloudKitService {
     
     // 공통 레코드 가져오기 로직
     private func getRecord(recordIDString: String) async throws -> CKRecord {
-        let recordID = createRecordID(from: recordIDString)
+        let recordID = CKRecord.ID(recordName: recordIDString)
         
         do {
             let record = try await publicDatabase.record(for: recordID)
             
-            guard record.recordType == cloudRecordType else {
+            guard record.recordType == CloudKitConstants.wordRecordType else {
                 throw CloudKitError.invalidRecordType
             }
             
@@ -99,7 +107,7 @@ final class CloudKitService {
     /// 단일 CKAsset에서 fileURL 추출
     private func fetchAudioFileURL(audioAsset: CKAsset) throws -> URL {
         guard let fileURL = audioAsset.fileURL else {
-            throw CloudKitError.audioDataNotFound
+            throw CloudKitError.audioURLNotFound
         }
         return fileURL
     }
@@ -120,8 +128,5 @@ final class CloudKitService {
         
         return urls
     }
-    
-    private func createRecordID(from recordName: String) -> CKRecord.ID {
-        return CKRecord.ID(recordName: recordName)
-    }
+
 }
