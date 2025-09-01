@@ -26,7 +26,7 @@ final class CloudKitFetcherService {
         let chapterCloudKit = ChapterCloudKit(record: chapterRecord)
         let stages = try await fetchStages(for: chapterRecord)
         
-        
+        print("[CloudKit] 챕터 조회 완료 - 제목: \(chapterCloudKit.title)")
         
         return Chapter(
             id: chapterCloudKit.id,
@@ -85,7 +85,10 @@ final class CloudKitFetcherService {
             )
         }
         
-        return stages.sorted { $0.id < $1.id }
+        let sortedStages = stages.sorted { $0.id < $1.id }
+        print("[CloudKit] 스테이지 조회 완료 - 총 \(sortedStages.count)개")
+        
+        return sortedStages
     }
     
     private func fetchWords(for stageRecord: CKRecord) async throws -> [Word] {
@@ -108,7 +111,10 @@ final class CloudKitFetcherService {
             )
         }
         
-        return words.sorted { $0.id < $1.id }
+        let sortedWords = words.sorted { $0.id < $1.id }
+        print("[CloudKit] 단어 조회 완료 - 총 \(sortedWords.count)개")
+        
+        return sortedWords
     }
     
     private func fetchDialogues(for wordRecord: CKRecord) async throws -> [Dialogue] {
@@ -125,11 +131,12 @@ final class CloudKitFetcherService {
                 sentence: dialogueCloudKit.sentence
             )
         }
+        let sortedDialogues = dialogues.sorted { $0.id < $1.id }
+        print("[CloudKit] 대화문 조회 완료 - 총 \(sortedDialogues.count)개")
         
         return dialogues.sorted { $0.id < $1.id }
     }
     
-    // MARK: - Generic Helper Methods
     private func processRecordsConcurrently<T>(_ records: [CKRecord], transform: @escaping (CKRecord) async throws -> T) async throws -> [T] {
         return try await withThrowingTaskGroup(of: T?.self) { group in
             for record in records {
