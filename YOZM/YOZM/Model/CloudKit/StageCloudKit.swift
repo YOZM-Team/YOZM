@@ -7,7 +7,7 @@
 
 import CloudKit
 
-final class StageCloudKit {
+struct StageCloudKit {
     let record: CKRecord
 
     func id() throws -> Int64 {
@@ -43,4 +43,3 @@ final class StageCloudKit {
         self.record = record
     }
 }
-

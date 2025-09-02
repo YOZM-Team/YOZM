@@ -7,7 +7,7 @@
 
 import CloudKit
 
-final class DialogueCloudKit {
+struct DialogueCloudKit {
     let record: CKRecord
 
     func id() throws -> Int64 {

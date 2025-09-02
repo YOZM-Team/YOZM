@@ -7,7 +7,7 @@
 
 import CloudKit
 
-final class ChapterCloudKit {
+struct ChapterCloudKit {
     let record: CKRecord
 
     func id() throws -> Int64 {

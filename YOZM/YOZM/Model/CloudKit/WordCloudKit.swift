@@ -7,7 +7,7 @@
 
 import CloudKit
 
-final class WordCloudKit {
+struct WordCloudKit {
     let record: CKRecord
 
     func id() throws -> Int64 {
