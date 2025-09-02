@@ -1,5 +1,5 @@
 //
-//  StageCloudKit.swift
+//  StageRecord.swift
 //  YOZM
 //
 //  Created by 최희진 on 9/2/25.
@@ -7,7 +7,7 @@
 
 import CloudKit
 
-struct StageCloudKit {
+struct StageRecord {
     let id: Int64
     let title: String
     let chapterReference: CKRecord.Reference
@@ -19,7 +19,7 @@ struct StageCloudKit {
     }
 }
 
-extension StageCloudKit{
+extension StageRecord{
     func toCKRecord() -> CKRecord {
         let record = CKRecord(recordType: CloudKitType.stageRecordType)
         record[CloudKitField.id.rawValue] = id as CKRecordValue

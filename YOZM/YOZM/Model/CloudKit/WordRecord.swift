@@ -1,5 +1,5 @@
 //
-//  WordCloudKit.swift
+//  WordRecord.swift
 //  YOZM
 //
 //  Created by 최희진 on 9/2/25.
@@ -7,7 +7,7 @@
 
 import CloudKit
 
-struct WordCloudKit {
+struct WordRecord {
     let id: Int64
     let word: String
     let meaning: String
@@ -28,7 +28,7 @@ struct WordCloudKit {
     }
 }
 
-extension WordCloudKit{
+extension WordRecord{
     func toCKRecord() -> CKRecord {
         let record = CKRecord(recordType: CloudKitType.wordRecordType)
         record[CloudKitField.id.rawValue] = id as CKRecordValue

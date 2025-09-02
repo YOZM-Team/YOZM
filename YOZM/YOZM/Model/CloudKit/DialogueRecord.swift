@@ -7,7 +7,7 @@
 
 import CloudKit
 
-struct DialogueCloudKit {
+struct DialogueRecord {
     let id: Int64
     let sentence: String
     let speakerType: Int64
@@ -21,7 +21,7 @@ struct DialogueCloudKit {
     }
 }
 
-extension DialogueCloudKit{
+extension DialogueRecord{
     func toCKRecord() -> CKRecord {
         let record = CKRecord(recordType: CloudKitType.dialogueRecordType)
         record[CloudKitField.id.rawValue] = id as CKRecordValue
