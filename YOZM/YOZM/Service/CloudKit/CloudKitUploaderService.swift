@@ -39,18 +39,23 @@ final class CloudKitUploaderService {
                 try await group.waitForAll()
             }
         } catch {
-            throw error
+            throw CloudKitError.invalidData(error.localizedDescription)
         }
     }
     
     private func uploadChapter(_ chapter: Chapter) async throws {
-        let chapterCloudKit = ChapterCloudKit(id: chapter.id, title: chapter.title)
-        let savedChapterRecord = try await publicDatabase.save(chapterCloudKit.record)
-        
-        for stage in chapter.stages {
-            try await uploadStage(stage, chapterRecord: savedChapterRecord)
+        do {
+            let chapterCloudKit = ChapterCloudKit(id: chapter.id, title: chapter.title)
+            let savedChapterRecord = try await publicDatabase.save(chapterCloudKit.record)
+            
+            for stage in chapter.stages {
+                try await uploadStage(stage, chapterRecord: savedChapterRecord)
+            }
+            print("[CloudKitUploader] 챕터 업로드 완료 - ID: \(chapter.id)")
+        } catch {
+            throw CloudKitError.invalidData(error.localizedDescription)
         }
-        print("[CloudKitUploader] 챕터 업로드 완료 - ID: \(chapter.id)")
+        
     }
     
     private func uploadStage(_ stage: Stage, chapterRecord: CKRecord) async throws {
@@ -68,36 +73,44 @@ final class CloudKitUploaderService {
     }
     
     private func uploadWord(_ word: Word, stageRecord: CKRecord) async throws {
-        let dialogueStrings = word.sampleDialogue.map { $0.sentence }
-        
-        let wordCloudKit = WordCloudKit(
-            id: word.id,
-            word: word.word,
-            meaning: word.meaning,
-            pronunciation: word.pronunciation,
-            sampleSentence: word.sampleSentence,
-            sampleDialogue: dialogueStrings,
-            stageRecord: stageRecord
-        )
-        
-        let savedWordRecord = try await publicDatabase.save(wordCloudKit.record)
-        
-        for dialogue in word.sampleDialogue {
-            try await uploadDialogue(dialogue, wordRecord: savedWordRecord)
+        do {
+            let dialogueStrings = word.sampleDialogue.map { $0.sentence }
+            
+            let wordCloudKit = WordCloudKit(
+                id: word.id,
+                word: word.word,
+                meaning: word.meaning,
+                pronunciation: word.pronunciation,
+                sampleSentence: word.sampleSentence,
+                sampleDialogue: dialogueStrings,
+                stageRecord: stageRecord
+            )
+            
+            let savedWordRecord = try await publicDatabase.save(wordCloudKit.record)
+            
+            for dialogue in word.sampleDialogue {
+                try await uploadDialogue(dialogue, wordRecord: savedWordRecord)
+            }
+            print("[CloudKitUploader] 단어 업로드 완료 - ID: \(word.id)")
+        } catch {
+            throw CloudKitError.invalidData(error.localizedDescription)
         }
-        print("[CloudKitUploader] 단어 업로드 완료 - ID: \(word.id)")
     }
     
     private func uploadDialogue(_ dialogue: Dialogue, wordRecord: CKRecord) async throws {
-        let dialogueCloudKit = DialogueCloudKit(
-            id: dialogue.id,
-            sentence: dialogue.sentence,
-            speakerType: dialogue.speakerType,
-            wordRecord: wordRecord
-        )
-        
-        _ = try await publicDatabase.save(dialogueCloudKit.record)
-        
-        print("[CloudKitUploader] 대화문 저장 완료 - ID: \(dialogue.id)")
+        do {
+            let dialogueCloudKit = DialogueCloudKit(
+                id: dialogue.id,
+                sentence: dialogue.sentence,
+                speakerType: dialogue.speakerType,
+                wordRecord: wordRecord
+            )
+            
+            _ = try await publicDatabase.save(dialogueCloudKit.record)
+            
+            print("[CloudKitUploader] 대화문 저장 완료 - ID: \(dialogue.id)")
+        } catch {
+            throw CloudKitError.invalidData(error.localizedDescription)
+        }
     }
 }
