@@ -8,38 +8,23 @@
 import CloudKit
 
 struct StageCloudKit {
-    let record: CKRecord
-
-    func id() throws -> Int64 {
-        guard let value = record[CloudKitField.id.rawValue] as? Int64 else {
-            throw CloudKitError.missingField(field: CloudKitField.id.rawValue)
-        }
-        return value
-    }
-
-    func title() throws -> String {
-        guard let value = record[CloudKitField.title.rawValue] as? String else {
-            throw CloudKitError.missingField(field: CloudKitField.title.rawValue)
-        }
-        return value
-    }
-
-    func chapterReference() throws -> CKRecord.Reference {
-        guard let value = record[CloudKitField.chapterReference.rawValue] as? CKRecord.Reference else {
-            throw CloudKitError.missingField(field: CloudKitField.chapterReference.rawValue)
-        }
-        return value
-    }
+    let id: Int64
+    let title: String
+    let chapterReference: CKRecord.Reference
 
     init(id: Int64, title: String, chapterRecord: CKRecord) {
-        self.record = CKRecord(recordType: CloudKitType.stageRecordType)
-        self.record[CloudKitField.id.rawValue] = id as CKRecordValue
-        self.record[CloudKitField.title.rawValue] = title as CKRecordValue
-        self.record[CloudKitField.chapterReference.rawValue] =
-            CKRecord.Reference(record: chapterRecord, action: .deleteSelf)
+        self.id = id
+        self.title = title
+        self.chapterReference = CKRecord.Reference(record: chapterRecord, action: .deleteSelf)
     }
+}
 
-    init(record: CKRecord) {
-        self.record = record
+extension StageCloudKit{
+    func toCKRecord() -> CKRecord {
+        let record = CKRecord(recordType: CloudKitType.stageRecordType)
+        record[CloudKitField.id.rawValue] = id as CKRecordValue
+        record[CloudKitField.title.rawValue] = title as CKRecordValue
+        record[CloudKitField.chapterReference.rawValue] = chapterReference
+        return record
     }
 }

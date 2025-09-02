@@ -22,14 +22,19 @@ final class CloudKitFetcherService {
                 recordType: CloudKitType.chapterRecordType,
                 predicate: NSPredicate(format: "\(CloudKitField.id.rawValue) == %lld", id)
             )
-            let chapterCloudKit = ChapterCloudKit(record: chapterRecord)
+            guard let id = chapterRecord[CloudKitField.id.rawValue] as? Int64 else {
+                throw CloudKitError.missingField(field: CloudKitField.id.rawValue)
+            }
+            guard let title = chapterRecord[CloudKitField.title.rawValue] as? String else {
+                throw CloudKitError.missingField(field: CloudKitField.title.rawValue)
+            }
+            
             let stages = try await fetchStages(for: chapterRecord)
             
-            let title = try chapterCloudKit.title()
             print("[CloudKitFetcher] 챕터 조회 완료 - 제목: \(title)")
             
             return Chapter(
-                id: try chapterCloudKit.id(),
+                id: id,
                 title: title,
                 stages: stages
             )
@@ -87,12 +92,18 @@ final class CloudKitFetcherService {
             )
             
             let stages = try await processRecordsConcurrently(stageRecords) { stageRecord in
-                let stageCloudKit = StageCloudKit(record: stageRecord)
+                guard let id = stageRecord[CloudKitField.id.rawValue] as? Int64 else {
+                    throw CloudKitError.missingField(field: CloudKitField.id.rawValue)
+                }
+                guard let title = stageRecord[CloudKitField.title.rawValue] as? String else {
+                    throw CloudKitError.missingField(field: CloudKitField.title.rawValue)
+                }
+                
                 let words = try await self.fetchWords(for: stageRecord)
                 
                 return Stage(
-                    id: try stageCloudKit.id(),
-                    title: try stageCloudKit.title(),
+                    id: id,
+                    title: title,
                     words: words
                 )
             }
@@ -114,15 +125,30 @@ final class CloudKitFetcherService {
             )
             
             let words = try await processRecordsConcurrently(wordRecords) { wordRecord in
-                let wordCloudKit = WordCloudKit(record: wordRecord)
+                guard let id = wordRecord[CloudKitField.id.rawValue] as? Int64 else {
+                    throw CloudKitError.missingField(field: CloudKitField.id.rawValue)
+                }
+                guard let word = wordRecord[CloudKitField.word.rawValue] as? String else {
+                    throw CloudKitError.missingField(field: CloudKitField.word.rawValue)
+                }
+                guard let meaning = wordRecord[CloudKitField.meaning.rawValue] as? String else {
+                    throw CloudKitError.missingField(field: CloudKitField.meaning.rawValue)
+                }
+                guard let pronunciation = wordRecord[CloudKitField.pronunciation.rawValue] as? String else {
+                    throw CloudKitError.missingField(field: CloudKitField.pronunciation.rawValue)
+                }
+                guard let sampleSentence = wordRecord[CloudKitField.sampleSentence.rawValue] as? String else {
+                    throw CloudKitError.missingField(field: CloudKitField.sampleSentence.rawValue)
+                }
+                
                 let dialogues = try await self.fetchDialogues(for: wordRecord)
                 
                 return Word(
-                    id: try wordCloudKit.id(),
-                    word: try wordCloudKit.word(),
-                    meaning: try wordCloudKit.meaning(),
-                    pronunciation: try wordCloudKit.pronunciation(),
-                    sampleSentence: try wordCloudKit.sampleSentence(),
+                    id: id,
+                    word: word,
+                    meaning: meaning,
+                    pronunciation: pronunciation,
+                    sampleSentence: sampleSentence,
                     sampleDialogue: dialogues
                 )
             }
@@ -144,11 +170,20 @@ final class CloudKitFetcherService {
             )
             
             let dialogues: [Dialogue] = try dialogueRecords.map { dialogueRecord in
-                let dialogueCloudKit = DialogueCloudKit(record: dialogueRecord)
+                guard let id = dialogueRecord[CloudKitField.id.rawValue] as? Int64 else {
+                    throw CloudKitError.missingField(field: CloudKitField.id.rawValue)
+                }
+                guard let sentence = dialogueRecord[CloudKitField.sentence.rawValue] as? String else {
+                    throw CloudKitError.missingField(field: CloudKitField.sentence.rawValue)
+                }
+                guard let speakerType = dialogueRecord[CloudKitField.speakerType.rawValue] as? Int64 else {
+                    throw CloudKitError.missingField(field: CloudKitField.speakerType.rawValue)
+                }
+                
                 return Dialogue(
-                    id: try dialogueCloudKit.id(),
-                    speakerType: try dialogueCloudKit.speakerType(),
-                    sentence: try dialogueCloudKit.sentence()
+                    id: id,
+                    speakerType: speakerType,
+                    sentence: sentence
                 )
             }
             

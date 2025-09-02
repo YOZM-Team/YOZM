@@ -45,8 +45,8 @@ final class CloudKitUploaderService {
     
     private func uploadChapter(_ chapter: Chapter) async throws {
         do {
-            let chapterCloudKit = ChapterCloudKit(id: chapter.id, title: chapter.title)
-            let savedChapterRecord = try await publicDatabase.save(chapterCloudKit.record)
+            let chapterCloudKit = ChapterRecord(id: chapter.id, title: chapter.title)
+            let savedChapterRecord = try await publicDatabase.save(chapterCloudKit.toCKRecord())
             
             for stage in chapter.stages {
                 try await uploadStage(stage, chapterRecord: savedChapterRecord)
@@ -64,7 +64,7 @@ final class CloudKitUploaderService {
             title: stage.title,
             chapterRecord: chapterRecord
         )
-        let savedStageRecord = try await publicDatabase.save(stageCloudKit.record)
+        let savedStageRecord = try await publicDatabase.save(stageCloudKit.toCKRecord())
         
         for word in stage.words {
             try await uploadWord(word, stageRecord: savedStageRecord)
@@ -86,7 +86,7 @@ final class CloudKitUploaderService {
                 stageRecord: stageRecord
             )
             
-            let savedWordRecord = try await publicDatabase.save(wordCloudKit.record)
+            let savedWordRecord = try await publicDatabase.save(wordCloudKit.toCKRecord())
             
             for dialogue in word.sampleDialogue {
                 try await uploadDialogue(dialogue, wordRecord: savedWordRecord)
@@ -106,7 +106,7 @@ final class CloudKitUploaderService {
                 wordRecord: wordRecord
             )
             
-            _ = try await publicDatabase.save(dialogueCloudKit.record)
+            _ = try await publicDatabase.save(dialogueCloudKit.toCKRecord())
             
             print("[CloudKitUploader] 대화문 저장 완료 - ID: \(dialogue.id)")
         } catch {
