@@ -1,0 +1,55 @@
+{
+    "chapters": [
+        {
+            "id": 1,
+            "title": "서울",
+            "stages": [
+                {
+                    "id": 1,
+                    "title": "경복궁",
+                    "words": [
+                        {
+                            "id": 1,
+                            "word": "만반잘부",
+                            "meaning": "만나서 반가워, 잘 부탁해",
+                            "pronunciation": "[man.ban.d͡ʑal.bu]",
+                            "sampleSentence": "신입생 OT에서 만반잘부~",
+                            "sampleDialogue": [
+                                {
+                                    "id": 1,
+                                    "speakerType": 0,
+                                    "sentence": "안녕하세요?"
+                                },
+                                {
+                                    "id": 2,
+                                    "speakerType": 1,
+                                    "sentence": "만반잘부입니다~"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 2,
+                            "word": "건행",
+                            "meaning": "건강하고 행복하세요",
+                            "pronunciation": "[kʌn.hɛŋ]",
+                            "sampleSentence": "시험 잘 보고 건행~",
+                            "sampleDialogue": [
+                                {
+                                    "id": 3,
+                                    "speakerType": 0,
+                                    "sentence": "내일 시험 잘 봐~"
+                                },
+                                {
+                                    "id": 4,
+                                    "speakerType": 1,
+                                    "sentence": "고마워, 건행!"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+

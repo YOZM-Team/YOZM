@@ -23,9 +23,28 @@ enum AudioType {
 }
 
 enum CloudKitField: String, CaseIterable {
+    // 공통
     case id = "id"
+    // ChapterCloudKit
+    case title = "title"
+    // StageCloudKit
+    case chapterReference = "chapterReference"
+    // DialogueCloudKit
+    case sentence = "sentence"
+    case speakerType = "speakerType"
+    case wordReference = "wordReference"
+    // WordCloudKit
     case word = "word"
     case meaning = "meaning"
+    case pronunciation = "pronunciation"
     case sampleSentence = "sampleSentence"
     case sampleDialogue = "sampleDialogue"
+    case stageReference = "stageReference"
+}
+
+enum CloudKitType {
+    static let wordRecordType = "WordRecord"
+    static let chapterRecordType = "ChapterRecord"
+    static let stageRecordType = "StageRecord"
+    static let dialogueRecordType = "DialogueRecord"
 }
