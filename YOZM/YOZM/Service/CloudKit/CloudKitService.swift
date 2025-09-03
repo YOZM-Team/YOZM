@@ -38,15 +38,13 @@ final class CloudKitService {
     
     static let shared = CloudKitService()
     private init() {}
-    
-    // MARK: - Data Management
+}
+
+// MARK: - CloudKitUploaderService Management
+extension CloudKitService {
     func upload() async throws {
         let chapters = try loadChaptersFromJSON()
         try await uploader.upload(chapters: chapters)
-    }
-    
-    func fetchChapter(by id: Int64) async throws -> Chapter {
-        return try await fetcher.fetchChapter(by: id)
     }
     
     private func loadChaptersFromJSON() throws -> [Chapter] {
@@ -59,9 +57,17 @@ final class CloudKitService {
         
         return chapterData.chapters
     }
-    
-    // MARK: - Audio Management
-    
+}
+
+// MARK: - CloudKitFetcherService Management
+extension CloudKitService {
+    func fetchChapter(by id: Int64) async throws -> Chapter {
+        return try await fetcher.fetchChapter(by: id)
+    }
+}
+
+// MARK: - CloudKitAudioService Management
+extension CloudKitService {
     /// Word ID로 word 오디오 URL 가져오기
     func fetchWordAudioURL(wordId: Int64) async throws -> URL {
         return try await audio.fetchWordAudioURL(wordId: wordId)
@@ -82,4 +88,3 @@ final class CloudKitService {
         return try await audio.fetchDialogueAudioURL(dialogueId: dialogueId)
     }
 }
-

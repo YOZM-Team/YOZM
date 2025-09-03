@@ -16,13 +16,6 @@ final class CloudKitFetcherService {
         self.publicDatabase = container.publicCloudDatabase
     }
     
-    private static func extractField<T>(_ record: CKRecord, field: CloudKitField, as type: T.Type) throws -> T {
-        guard let value = record[field.rawValue] as? T else {
-            throw CloudKitError.missingField(field: field.rawValue)
-        }
-        return value
-    }
-    
     func fetchChapter(by id: Int64) async throws -> Chapter {
         do {
             let chapterRecord = try await fetchRecord(
@@ -169,7 +162,9 @@ final class CloudKitFetcherService {
         
         return Dialogue(id: id, speakerType: speakerType, sentence: sentence)
     }
-    
+}
+
+extension CloudKitFetcherService{
     private func processRecordsConcurrently<T>(_ records: [CKRecord], transform: @escaping (CKRecord) async throws -> T) async throws -> [T] {
         return try await withThrowingTaskGroup(of: T.self) { group in
             for record in records {
@@ -184,5 +179,12 @@ final class CloudKitFetcherService {
             }
             return results
         }
+    }
+    
+    private static func extractField<T>(_ record: CKRecord, field: CloudKitField, as type: T.Type) throws -> T {
+        guard let value = record[field.rawValue] as? T else {
+            throw CloudKitError.missingField(field: field.rawValue)
+        }
+        return value
     }
 }
