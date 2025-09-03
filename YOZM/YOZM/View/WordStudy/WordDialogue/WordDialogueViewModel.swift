@@ -9,11 +9,11 @@ import Foundation
 
 @Observable
 final class WordDialogueViewModel {
-    private(set) var dialogue: [DialogueSentence]
+    private(set) var dialogue: [Dialogue]
     let finishAction: (() -> Void)?
 
     init(
-        dialogue: [DialogueSentence] = Word.sampleWord.sampleDialogue,
+        dialogue: [Dialogue] = Word.sampleWord.sampleDialogue,
         finishAction: (() -> Void)? = nil
     ) {
         self.dialogue = dialogue

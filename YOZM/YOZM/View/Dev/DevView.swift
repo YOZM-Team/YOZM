@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DevView: View {
+    
     var body: some View {
         NavigationStack {
             List {
@@ -19,6 +20,10 @@ struct DevView: View {
                 }
                 NavigationLink("Pronunciation Score") {
                     PronunciationScoreView()
+                }
+                
+                NavigationLink("Data Store") {
+                    DataStoreView()
                 }
             }
             .navigationTitle("Dev")

@@ -40,7 +40,7 @@ struct WordDialogueView: View {
 
     private var chat: some View {
         VStack {
-            ForEach(viewModel.dialogue.prefix(displayedCount), id: \.index) {
+            ForEach(viewModel.dialogue.prefix(displayedCount), id: \.id) {
                 sentence in
                 dialogueRow(sentence)
             }
@@ -62,8 +62,8 @@ struct WordDialogueView: View {
     }
 
     @ViewBuilder
-    private func dialogueRow(_ sentence: DialogueSentence) -> some View {
-        if sentence.speaker == .me {
+    private func dialogueRow(_ sentence: Dialogue) -> some View {
+        if sentence.speakerType == 0 {
             HStack {
                 Spacer()
 
@@ -76,7 +76,7 @@ struct WordDialogueView: View {
                             .fill(.tertiaryNormal)
                     }
             }
-        } else if sentence.speaker == .other {
+        } else if sentence.speakerType == 1 {
             HStack {
                 circleImage(.sejong)
                 Text(sentence.sentence)

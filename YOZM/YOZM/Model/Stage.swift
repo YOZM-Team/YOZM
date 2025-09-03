@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Stage {
-    let id: UUID
+struct Stage: Codable {
+    let id: Int64
+    let title: String
     let words: [Word]
 }

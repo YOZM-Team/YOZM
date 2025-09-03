@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct Chapter {
-    let id: UUID
+struct ChapterData: Codable {
+    let chapters: [Chapter]
+}
+
+struct Chapter: Codable{
+    let id: Int64
+    let title: String
     let stages: [Stage]
 }
