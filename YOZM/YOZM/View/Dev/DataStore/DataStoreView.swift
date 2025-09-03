@@ -34,6 +34,7 @@ struct DataStoreView: View {
                     try await cloudKitService.fetchChapter(by: 1)
                 }
             }
+            .buttonStyle(.bordered)
         }
     }
     
@@ -70,7 +71,9 @@ struct DataStoreView: View {
     private func fetchSwiftData() async {
         do {
             let savedWords = try SwiftDataService.shared.fetchAllWords()
-            print("\n SwiftData 조회 완료: \(savedWords)")
+            for savedWord in savedWords{
+                print("\n SwiftData 조회 완료: \(savedWord.word)")
+            }
         } catch {
             print("\n 일반 에러: \(error.localizedDescription)")
         }

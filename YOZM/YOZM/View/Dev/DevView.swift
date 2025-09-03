@@ -21,14 +21,12 @@ struct DevView: View {
                 NavigationLink("Pronunciation Score") {
                     PronunciationScoreView()
                 }
+                
+                NavigationLink("Data Store") {
+                    DataStoreView()
+                }
             }
             .navigationTitle("Dev")
-        }
-        .onAppear{
-            Task {
-                try await CloudKitService.shared.fetchChapter(by: 1)
-//                try await CloudKitService.shared.upload()
-            }
         }
     }
 }
