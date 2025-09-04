@@ -49,7 +49,7 @@ struct WordStudyView: View {
 
                 nextButton
             }
-            .padding(24)
+            .padding(Spacing.lg)
         }
     }
 
@@ -136,10 +136,10 @@ struct WordStudyView: View {
                     .foregroundStyle(.blackNormal)
             }
             .buttonStyle(StudyCircleButtonStyle())
-            .padding(.bottom, 24)
+            .padding(.bottom, Spacing.lg)
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 32)
+        .padding(.vertical, Spacing.lg)
+        .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
     }
