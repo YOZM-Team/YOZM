@@ -19,6 +19,7 @@ final class SpeakingSentenceViewModel {
     private let audioPlayerService: AudioPlayerService
     private let speechRecognitionService: SpeechRecognitionService
     private let pronunciationScoreService: PronunciationScoreService
+    private let cloudkitService: CloudKitService
 
     var transcription: String? {
         speechRecognitionService.result
@@ -37,6 +38,16 @@ final class SpeakingSentenceViewModel {
         self.audioPlayerService = AudioPlayerService.shared
         self.speechRecognitionService = SpeechRecognitionService.shared
         self.pronunciationScoreService = PronunciationScoreService.shared
+        self.cloudkitService = CloudKitService.shared
+    }
+    
+    func loadAudio() async {
+        do {
+            let url = try await cloudkitService.fetchSentenceAudioURL(wordId: word.id)
+            try audioPlayerService.load(url: url)
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 
     func playAudio() {
