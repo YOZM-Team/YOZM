@@ -10,12 +10,12 @@ import Foundation
 @Observable
 final class ChapterViewModel {
     private(set) var chapter: Chapter
-    private(set) var lastestCompleteWord: Word?
+    private(set) var latestCompleteWord: Word?
     var availableWords: [Int64: Bool] {
         var isAvailable = true
         var foundTarget: Bool = false
 
-        if lastestCompleteWord == nil {
+        if latestCompleteWord == nil {
             foundTarget = true
         }
 
@@ -28,7 +28,7 @@ final class ChapterViewModel {
                     isAvailable = false
                 }
 
-                if word.id == lastestCompleteWord?.id {
+                if word.id == latestCompleteWord?.id {
                     foundTarget = true
                 }
             }
@@ -39,6 +39,6 @@ final class ChapterViewModel {
 
     init(chapter: Chapter = .sample) {
         self.chapter = chapter
-        self.lastestCompleteWord = nil
+        self.latestCompleteWord = nil
     }
 }
