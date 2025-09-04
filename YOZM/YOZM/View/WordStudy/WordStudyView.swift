@@ -18,7 +18,7 @@ struct WordStudyView: View {
         ZStack {
             background
 
-            VStack(spacing: 16) {
+            VStack(spacing: Spacing.md) {
                 navigationBar
 
                 Group {
@@ -58,7 +58,7 @@ struct WordStudyView: View {
     }
 
     private var navigationBar: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: Spacing.md) {
             BackButton()
             StudyProgressBar(
                 progress: viewModel.wordStudyState.currentProgressRate
@@ -107,7 +107,7 @@ struct WordStudyView: View {
     }
 
     private var finish: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.md) {
             Image(.characterSmile)
                 .resizable()
                 .scaledToFit()

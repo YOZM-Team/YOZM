@@ -25,7 +25,7 @@ struct ChapterView: View {
                     )
                 }
             }
-            .padding(Spacing.md)
+            .padding()
             .safeAreaPadding(.vertical, Spacing.xxxl)
             .frame(maxWidth: .infinity)
             .background(

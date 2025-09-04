@@ -15,7 +15,7 @@ struct WordExplanationView: View {
     }
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: Spacing.xl) {
             Text(viewModel.word.word)
                 .font(.title)
                 .bold()
@@ -29,8 +29,8 @@ struct WordExplanationView: View {
                     alignment: .topLeading
                 )
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 32)
+        .padding(.vertical, Spacing.lg)
+        .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
         .task {

@@ -16,7 +16,7 @@ struct WritingSentenceView: View {
 
     var body: some View {
         VStack {
-            VStack(spacing: 16) {
+            VStack(spacing: Spacing.md) {
                 Text("Test Sentence")
                     .font(.title)
                     .bold()
@@ -31,7 +31,7 @@ struct WritingSentenceView: View {
 
             Spacer()
 
-            VStack(spacing: 32) {
+            VStack(spacing: Spacing.xl) {
                 Text("Type the sentence")
                     .font(.callout)
                     .bold()
@@ -50,8 +50,8 @@ struct WritingSentenceView: View {
                 )
             }
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 32)
+        .padding(.vertical, Spacing.lg)
+        .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
     }

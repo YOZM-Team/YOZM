@@ -29,7 +29,7 @@ struct WritingWordView: View {
 
             Spacer()
 
-            VStack(spacing: 32) {
+            VStack(spacing: Spacing.xl) {
                 Text("Type the word")
 
                 StudyTextField(
