@@ -44,6 +44,9 @@ struct ChapterView: View {
         .ignoresSafeArea()
         .onAppear {
             UIScrollView.appearance().bounces = false
+            Task {
+                await viewModel.fetchData()
+            }
         }
         .onDisappear {
             UIScrollView.appearance().bounces = true

@@ -16,6 +16,23 @@ final class CloudKitFetcherService {
         self.publicDatabase = container.publicCloudDatabase
     }
     
+    func fetchAllChapters() async throws -> [Chapter] {
+        do {
+            let chapterRecords = try await fetchRecords(
+                recordType: CloudKitType.chapterRecordType,
+                predicate: NSPredicate(value: true),
+                sortBy: CloudKitField.id.rawValue
+            )
+            
+            let chapters = try await processRecordsConcurrently(chapterRecords, transform: buildChapter)
+            print("[CloudKitFetcher] 전체 챕터 조회 완료 - 총 \(chapters.count)개")
+            return chapters
+        } catch {
+            print("[CloudKitFetcher] 전체 챕터 조회 중 오류 발생: \(error.localizedDescription)")
+            throw error
+        }
+    }
+    
     func fetchChapter(by id: Int64) async throws -> Chapter {
         do {
             let chapterRecord = try await fetchRecord(
@@ -114,7 +131,7 @@ final class CloudKitFetcherService {
             )
             
             let words = try await processRecordsConcurrently(wordRecords, transform: buildWord)
-            print("[CloudKitFetcher] 단어 조회 완룼 - 총 \(words.count)개")
+            print("[CloudKitFetcher] 단어 조회 완료 - 총 \(words.count)개")
             return words
         } catch {
             throw CloudKitError.invalidData(error.localizedDescription)
