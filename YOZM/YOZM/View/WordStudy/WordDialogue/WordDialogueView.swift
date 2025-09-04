@@ -23,7 +23,7 @@ struct WordDialogueView: View {
         }
         .onAppear{
             Task {
-                await viewModel.loadAudio()
+                await viewModel.loadAndPlayAudioSequence()
             }
         }
     }

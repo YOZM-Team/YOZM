@@ -50,6 +50,11 @@ struct WritingSentenceView: View {
                 )
             }
         }
+        .onAppear{
+            Task {
+                await viewModel.loadAudio()
+            }
+        }
         .padding(.vertical, 24)
         .padding(.horizontal, 32)
         .frame(maxWidth: .infinity, maxHeight: 480)

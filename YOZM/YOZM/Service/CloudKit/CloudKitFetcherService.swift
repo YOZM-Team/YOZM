@@ -102,13 +102,13 @@ final class CloudKitFetcherService {
         do {
             let stageRecords = try await fetchRecords(
                 recordType: CloudKitType.stageRecordType,
-                predicate: NSPredicate(format: "\(CloudKitField.chapterReference.rawValue) == %@", chapterRecord),
-                sortBy: CloudKitField.id.rawValue
+                predicate: NSPredicate(format: "\(CloudKitField.chapterReference.rawValue) == %@", chapterRecord)
             )
             
             let stages = try await processRecordsConcurrently(stageRecords, transform: buildStage)
+            let sortedStages = stages.sorted { $0.id < $1.id }
             print("[CloudKitFetcher] 스테이지 조회 완료 - 총 \(stages.count)개")
-            return stages
+            return sortedStages
         } catch {
             throw CloudKitError.invalidData(error.localizedDescription)
         }
@@ -126,13 +126,13 @@ final class CloudKitFetcherService {
         do {
             let wordRecords = try await fetchRecords(
                 recordType: CloudKitType.wordRecordType,
-                predicate: NSPredicate(format: "\(CloudKitField.stageReference.rawValue) == %@", stageRecord),
-                sortBy: CloudKitField.id.rawValue
+                predicate: NSPredicate(format: "\(CloudKitField.stageReference.rawValue) == %@", stageRecord)
             )
             
             let words = try await processRecordsConcurrently(wordRecords, transform: buildWord)
+            let sortedWords = words.sorted { $0.id < $1.id }
             print("[CloudKitFetcher] 단어 조회 완료 - 총 \(words.count)개")
-            return words
+            return sortedWords
         } catch {
             throw CloudKitError.invalidData(error.localizedDescription)
         }
