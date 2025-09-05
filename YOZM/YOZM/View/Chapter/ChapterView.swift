@@ -28,26 +28,34 @@ struct ChapterView: View {
             .padding()
             .safeAreaPadding(.vertical, 64)
             .frame(maxWidth: .infinity)
-            .background(
-                LinearGradient(
-                    colors: [
-                        Color(hex: "BFE3D9"),
-                        Color(hex: "FFF5E0"),
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
+            .onGeometryChange(for: CGRect.self) { proxy in
+                proxy.frame(in: .named("ScrollView"))
+            } action: { frame in
+                viewModel.setScrollViewFrame(frame)
+            }
         }
+        .coordinateSpace(name: "ScrollView")
         .defaultScrollAnchor(.bottom)
         .frame(maxHeight: .infinity)
+        .onGeometryChange(for: CGSize.self) { proxy in
+            proxy.size
+        } action: { size in
+            viewModel.setScrollViewSize(size)
+        }
+        .background(
+            LinearGradient(
+                colors: [
+                    Color(hex: "BFE3D9"),
+                    Color(hex: "FFF5E0"),
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: viewModel.backgroundHeight)
+            .offset(y: viewModel.backgroundOffsetY),
+            alignment: .top
+        )
         .ignoresSafeArea()
-        .onAppear {
-            UIScrollView.appearance().bounces = false
-        }
-        .onDisappear {
-            UIScrollView.appearance().bounces = true
-        }
     }
 }
 

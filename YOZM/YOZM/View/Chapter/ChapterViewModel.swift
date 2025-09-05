@@ -36,9 +36,28 @@ final class ChapterViewModel {
 
         return available
     }
+    private var scrollViewHeight: CGFloat
+    private var scrollViewOffsetY: CGFloat
+    private(set) var backgroundHeight: CGFloat
+    var backgroundOffsetY: CGFloat {
+        let maxY = backgroundHeight - scrollViewHeight
+        return min(.zero, max(-maxY, scrollViewOffsetY))
+    }
 
     init(chapter: Chapter = .sample) {
         self.chapter = chapter
         self.latestCompleteWord = nil
+        self.scrollViewHeight = .zero
+        self.scrollViewOffsetY = .zero
+        self.backgroundHeight = .zero
+    }
+
+    func setScrollViewFrame(_ frame: CGRect) {
+        self.scrollViewOffsetY = frame.minY
+        self.backgroundHeight = frame.height
+    }
+
+    func setScrollViewSize(_ size: CGSize) {
+        self.scrollViewHeight = size.height
     }
 }
