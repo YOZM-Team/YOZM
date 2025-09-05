@@ -21,9 +21,11 @@ struct DevView: View {
                 NavigationLink("Pronunciation Score") {
                     PronunciationScoreView()
                 }
-                
                 NavigationLink("Data Store") {
                     DataStoreView()
+                }
+                NavigationLink("Google Analytics") {
+                    GoogleAnalyticsView()
                 }
             }
             .navigationTitle("Dev")
