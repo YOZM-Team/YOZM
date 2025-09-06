@@ -8,31 +8,33 @@
 import SwiftUI
 
 struct DevView: View {
-    
     var body: some View {
-        NavigationStack {
-            List {
-                NavigationLink("Audio Player") {
-                    AudioPlayerView()
-                }
-                NavigationLink("Speech Recognition") {
-                    SpeechRecognitionView()
-                }
-                NavigationLink("Pronunciation Score") {
-                    PronunciationScoreView()
-                }
-                NavigationLink("Data Store") {
-                    DataStoreView()
-                }
-                NavigationLink("Google Analytics") {
-                    GoogleAnalyticsView()
-                }
+        List {
+            NavigationLink("Audio Player") {
+                AudioPlayerView()
             }
-            .navigationTitle("Dev")
+            NavigationLink("Speech Recognition") {
+                SpeechRecognitionView()
+            }
+            NavigationLink("Pronunciation Score") {
+                PronunciationScoreView()
+            }
+            NavigationLink("Data Store") {
+                DataStoreView()
+            }
+            NavigationLink("Google Analytics") {
+                GoogleAnalyticsView()
+            }
+        }
+        .navigationTitle("Dev")
+        .onAppear {
+            GoogleAnalyticsService.shared.setCurrentScreen(.dev)
         }
     }
 }
 
 #Preview {
-    DevView()
+    NavigationStack {
+        DevView()
+    }
 }
