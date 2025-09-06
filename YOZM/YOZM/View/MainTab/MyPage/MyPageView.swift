@@ -61,7 +61,7 @@ struct MyPageView: View {
             .bold()
             .foregroundStyle(.white)
             .padding(.vertical, 6)//Spacing에 없는 padding
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 10)//Spacing에 없는 padding
             .background {
                 RoundedRectangle(cornerRadius: 20)
                      .fill(Color(hex: "A5C3BE"))
@@ -89,7 +89,7 @@ struct MyPageView: View {
             .foregroundStyle(.blackNormal)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity)
-            .padding(10)
+            .padding(10)//Spacing에 없는 padding
             .background{
                 RoundedRectangle(cornerRadius: 10)
                     .fill(.white)
