@@ -21,10 +21,12 @@ struct WordDialogueView: View {
             partnerProfile
             chat
         }
-        .onAppear{
-            Task {
-                await viewModel.loadAndPlayAudioSequence()
-            }
+        .onAppear {
+            // TODO: Set word id
+            GoogleAnalyticsService.shared.textDramaViewed(wordId: 0)
+        }
+        .task {
+            await viewModel.loadAndPlayAudioSequence()
         }
     }
 
@@ -58,7 +60,7 @@ struct WordDialogueView: View {
             hasAnimated = true
             displayedCount = 0
             let total = viewModel.dialogue.count
-            for i in 1 ... total {
+            for i in 1...total {
                 try? await Task.sleep(for: .seconds(1))
                 displayedCount = i
             }

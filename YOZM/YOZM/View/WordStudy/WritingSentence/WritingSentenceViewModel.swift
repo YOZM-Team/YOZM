@@ -18,7 +18,7 @@ final class WritingSentenceViewModel {
     }
 
     private let finishAction: (() -> Void)?
-    
+
     private let audioPlayerService: AudioPlayerService
     private let cloudkitService: CloudKitService
 
@@ -39,7 +39,9 @@ final class WritingSentenceViewModel {
 
     func loadAudio() async {
         do {
-            let url = try await cloudkitService.fetchSentenceAudioURL(wordId: word.id)
+            let url = try await cloudkitService.fetchSentenceAudioURL(
+                wordId: word.id
+            )
             try audioPlayerService.load(url: url)
         } catch {
             print(error.localizedDescription)

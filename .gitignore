@@ -112,3 +112,5 @@ coverage.xml
 *.cover
 
 *.xcconfig
+
+GoogleService-Info.plist

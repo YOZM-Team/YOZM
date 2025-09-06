@@ -43,6 +43,9 @@ struct WordExplanationView: View {
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
         .task {
+            GoogleAnalyticsService.shared.wordExplanationViewed(
+                wordId: viewModel.word.id
+            )
             try? await Task.sleep(for: .seconds(3))
             viewModel.finishAction?()
         }

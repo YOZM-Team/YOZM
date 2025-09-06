@@ -51,6 +51,29 @@ struct WordStudyView: View {
             }
             .padding(Spacing.lg)
         }
+        .onAppear {
+            GoogleAnalyticsService.shared.setCurrentScreen(.studyWord)
+            // TODO: Set chapter name, stage name, word id
+            GoogleAnalyticsService.shared.screenLearning(
+                chapterName: "Seoul",
+                stageName: "LotteWorldTower",
+                wordId: 0
+            )
+            GoogleAnalyticsService.shared.learningStepStarted(
+                wordId: 0,
+                chapterName: "Seoul",
+                stageName: "LotteWorldTower"
+            )
+        }
+        .onDisappear {
+            // TODO: Set chapter name, dropout stage
+            if viewModel.wordStudyState != .finish {
+                GoogleAnalyticsService.shared.chapterDropout(
+                    chapterName: "Seoul",
+                    dropoutStage: "LotteWorldTower"
+                )
+            }
+        }
     }
 
     private var background: some View {

@@ -52,9 +52,14 @@ final class SpeakingSentenceViewModel {
 
     func playAudio() {
         do {
+            GoogleAnalyticsService.shared.audioPlayed(wordId: word.id)
             try audioPlayerService.play()
             isPlaying = true
         } catch {
+            GoogleAnalyticsService.shared.audioPlaybackError(
+                errorType: error.localizedDescription,
+                wordId: word.id
+            )
             print(error.localizedDescription)
         }
     }
@@ -64,6 +69,10 @@ final class SpeakingSentenceViewModel {
             try audioPlayerService.stop()
             isPlaying = false
         } catch {
+            GoogleAnalyticsService.shared.audioPlaybackError(
+                errorType: error.localizedDescription,
+                wordId: word.id
+            )
             print(error.localizedDescription)
         }
     }

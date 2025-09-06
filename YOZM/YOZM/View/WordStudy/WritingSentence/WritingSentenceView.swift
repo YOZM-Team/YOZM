@@ -59,6 +59,18 @@ struct WritingSentenceView: View {
         .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
+        .onAppear {
+            GoogleAnalyticsService.shared.inputSentenceTestStarted(
+                wordId: viewModel.word.id
+            )
+        }
+        .onDisappear {
+            GoogleAnalyticsService.shared.inputSentenceTestCompleted(
+                wordId: viewModel.word.id,
+                correct: viewModel.isCorrect,
+                attempts: 0
+            )
+        }
     }
 
     @ViewBuilder
