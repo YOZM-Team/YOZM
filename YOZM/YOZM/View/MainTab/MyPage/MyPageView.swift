@@ -16,17 +16,15 @@ struct MyPageView: View {
     }
     
     var body: some View {
-        
         ZStack {
             
             background
             
-            VStack(spacing: 20) {//Spacing에 없는 padding
+            VStack(spacing: Spacing.md) {
                 
                 navigationBar
                 
                 VStack(spacing: Spacing.xs){
-                    
                     Image(.characterRank1)
                         .resizable()
                         .scaledToFit()
@@ -45,9 +43,11 @@ struct MyPageView: View {
                     rankTagLine
                     rankExplanation
                 }
+                
                 Spacer()
+                
             }
-            .padding(24)
+            .padding(Spacing.lg)
         }
     }
     
@@ -60,8 +60,8 @@ struct MyPageView: View {
             .font(.body)
             .bold()
             .foregroundStyle(.white)
-            .padding(.vertical, 6)//Spacing에 없는 padding
-            .padding(.horizontal, 10)//Spacing에 없는 padding
+            .padding(.vertical, Spacing.xs)
+            .padding(.horizontal, Spacing.sm)
             .background {
                 RoundedRectangle(cornerRadius: 20)
                      .fill(Color(hex: "A5C3BE"))
@@ -75,7 +75,7 @@ struct MyPageView: View {
             .bold()
             .foregroundStyle(.blackNormal)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)//Spacing에 없는 padding
+            .padding(.vertical, Spacing.sm)
             .background{
                 RoundedRectangle(cornerRadius: 10)
                     .fill(.blueNormal)
@@ -89,7 +89,7 @@ struct MyPageView: View {
             .foregroundStyle(.blackNormal)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity)
-            .padding(10)//Spacing에 없는 padding
+            .padding(Spacing.sm)
             .background{
                 RoundedRectangle(cornerRadius: 10)
                     .fill(.white)
