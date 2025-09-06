@@ -26,7 +26,7 @@ struct ChapterView: View {
                 }
             }
             .padding()
-            .safeAreaPadding(.vertical, 64)
+            .safeAreaPadding(.vertical, Spacing.xxxl)
             .frame(maxWidth: .infinity)
             .onGeometryChange(for: CGRect.self) { proxy in
                 proxy.frame(in: .named("ScrollView"))

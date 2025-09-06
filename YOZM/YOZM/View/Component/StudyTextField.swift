@@ -23,16 +23,16 @@ struct StudyTextField: View {
                     if isCorrect {
                         Image(systemName: "checkmark")
                             .foregroundStyle(.greenDark)
-                            .padding(8)
+                            .padding(Spacing.xs)
                     } else {
                         Image(systemName: "xmark")
                             .foregroundStyle(.tertiaryNormal)
-                            .padding(8)
+                            .padding(Spacing.xs)
                     }
                 }
                 Text(correctText)
                     .foregroundStyle(.clear)
-                    .padding(.top, 8)
+                    .padding(.top, Spacing.xs)
                     .overlay(
                         GeometryReader { geo in
                             Path { path in
