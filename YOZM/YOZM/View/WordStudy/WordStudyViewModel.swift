@@ -52,11 +52,16 @@ enum WordStudyState {
 
 @Observable
 final class WordStudyViewModel {
+    private(set) var word: Word
+
     private(set) var wordStudyState: WordStudyState
     private(set) var isNextButtonEnabled: Bool
     private(set) var finishAction: () -> Void
 
-    init() {
+    init(
+        word: Word = Word.sampleWord
+    ) {
+        self.word = word
         self.wordStudyState = .dialogue
         self.isNextButtonEnabled = false
         self.finishAction = {

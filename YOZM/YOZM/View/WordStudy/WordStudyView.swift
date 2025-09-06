@@ -18,7 +18,7 @@ struct WordStudyView: View {
         ZStack {
             background
 
-            VStack(spacing: 16) {
+            VStack(spacing: Spacing.md) {
                 navigationBar
 
                 Group {
@@ -49,7 +49,7 @@ struct WordStudyView: View {
 
                 nextButton
             }
-            .padding(24)
+            .padding(Spacing.lg)
         }
         .onAppear {
             GoogleAnalyticsService.shared.setCurrentScreen(.studyWord)
@@ -81,7 +81,7 @@ struct WordStudyView: View {
     }
 
     private var navigationBar: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: Spacing.md) {
             BackButton()
             StudyProgressBar(
                 progress: viewModel.wordStudyState.currentProgressRate
@@ -91,6 +91,7 @@ struct WordStudyView: View {
 
     private var dialogue: some View {
         let viewModel = WordDialogueViewModel(
+            word: viewModel.word,
             finishAction: viewModel.finishAction
         )
         return WordDialogueView(viewModel: viewModel)
@@ -98,6 +99,7 @@ struct WordStudyView: View {
 
     private var explanation: some View {
         let viewModel = WordExplanationViewModel(
+            word: viewModel.word,
             finishAction: viewModel.finishAction
         )
         return WordExplanationView(viewModel: viewModel)
@@ -105,6 +107,7 @@ struct WordStudyView: View {
 
     private var writingWord: some View {
         let viewModel = WritingWordViewModel(
+            word: viewModel.word,
             finishAction: viewModel.finishAction
         )
         return WritingWordView(viewModel: viewModel)
@@ -112,20 +115,22 @@ struct WordStudyView: View {
 
     private var speakingSentence: some View {
         let viewModel = SpeakingSentenceViewModel(
+            word: viewModel.word,
             finishAction: viewModel.finishAction
         )
         return SpeakingSentenceView(viewModel: viewModel)
     }
 
     private var writingSentence: some View {
-        let viewModel = WritingSentenceViewModel {
-            self.viewModel.setIsNextButtonEnabled(true)
-        }
+        let viewModel = WritingSentenceViewModel(
+            word: viewModel.word,
+            finishAction: viewModel.finishAction
+        )
         return WritingSentenceView(viewModel: viewModel)
     }
 
     private var finish: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.md) {
             Image(.characterSmile)
                 .resizable()
                 .scaledToFit()
@@ -154,10 +159,10 @@ struct WordStudyView: View {
                     .foregroundStyle(.blackNormal)
             }
             .buttonStyle(StudyCircleButtonStyle())
-            .padding(.bottom, 24)
+            .padding(.bottom, Spacing.lg)
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 32)
+        .padding(.vertical, Spacing.lg)
+        .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
     }

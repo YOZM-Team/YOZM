@@ -17,13 +17,16 @@ struct WordDialogueView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.md) {
             partnerProfile
             chat
         }
         .onAppear {
             // TODO: Set word id
             GoogleAnalyticsService.shared.textDramaViewed(wordId: 0)
+        }
+        .task {
+            await viewModel.loadAndPlayAudioSequence()
         }
     }
 
@@ -73,8 +76,8 @@ struct WordDialogueView: View {
 
                 Text(sentence.sentence)
                     .foregroundStyle(.blackNormal)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 16)
+                    .padding(.vertical, Spacing.xs)
+                    .padding(.horizontal, Spacing.md)
                     .background {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(.tertiaryNormal)
@@ -85,8 +88,8 @@ struct WordDialogueView: View {
                 circleImage(.sejong)
                 Text(sentence.sentence)
                     .foregroundStyle(.blackNormal)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 16)
+                    .padding(.vertical, Spacing.xs)
+                    .padding(.horizontal, Spacing.md)
                     .background {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(.white)

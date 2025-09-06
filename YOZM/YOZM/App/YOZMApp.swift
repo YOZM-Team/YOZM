@@ -35,7 +35,7 @@ struct MainView: View {
     
     var body: some View {
         NavigationStack {
-            WordStudyView()
+            ChapterView()
         }
         .onChange(of: scenePhase) { oldValue, newValue in
             switch newValue {

@@ -9,17 +9,26 @@ import SwiftUI
 
 struct WordExplanationView: View {
     @State private var viewModel: WordExplanationViewModel
-
+    
     init(viewModel: WordExplanationViewModel = WordExplanationViewModel()) {
         self._viewModel = State(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
-        VStack(spacing: 32) {
-            Text(viewModel.word.word)
-                .font(.title)
-                .bold()
-                .foregroundStyle(.blackNormal)
+        VStack(spacing: Spacing.xl) {
+            
+            VStack {
+                Text(viewModel.word.word)
+                    .font(.title)
+                    .bold()
+                    .foregroundStyle(.blackNormal)
+                
+                Text(viewModel.word.pronunciation)
+                    .font(.subheadline)
+                    .bold()
+                    .foregroundStyle(.blackNormal)
+            }
+            
             Text(viewModel.word.meaning)
                 .multilineTextAlignment(.leading)
                 .foregroundStyle(.blackNormal)
@@ -29,8 +38,8 @@ struct WordExplanationView: View {
                     alignment: .topLeading
                 )
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 32)
+        .padding(.vertical, Spacing.lg)
+        .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
         .task {
