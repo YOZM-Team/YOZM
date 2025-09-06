@@ -9,13 +9,13 @@ import SwiftUI
 
 struct WordExplanationView: View {
     @State private var viewModel: WordExplanationViewModel
-
+    
     init(viewModel: WordExplanationViewModel = WordExplanationViewModel()) {
         self._viewModel = State(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: Spacing.xl) {
             
             VStack {
                 Text(viewModel.word.word)
@@ -38,8 +38,8 @@ struct WordExplanationView: View {
                     alignment: .topLeading
                 )
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 32)
+        .padding(.vertical, Spacing.lg)
+        .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
         .task {

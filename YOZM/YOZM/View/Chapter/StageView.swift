@@ -15,7 +15,9 @@ struct StageView: View {
         VStack {
             ForEach(stage.words.indices, id: \.self) { index in
                 HStack {
-                    if index % 5 == 0 || index % 5 == 4 {
+                    if StageLayout.spacerPositions.contains(
+                        index % StageLayout.stageItemCount
+                    ) {
                         Spacer()
                     }
 
@@ -25,12 +27,20 @@ struct StageView: View {
                             availableWords[stage.words[newIndex].id] == false
                         )
 
-                    if index % 5 == 2 {
+                    if index % StageLayout.stageItemCount
+                        == StageLayout.centerPosition
+                    {
                         Spacer()
                     }
                 }
             }
         }
+    }
+
+    private enum StageLayout {
+        static let stageItemCount = 5
+        static let spacerPositions = [0, 4]
+        static let centerPosition = 2
     }
 }
 
