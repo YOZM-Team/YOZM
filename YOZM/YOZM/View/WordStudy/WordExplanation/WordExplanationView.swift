@@ -9,17 +9,26 @@ import SwiftUI
 
 struct WordExplanationView: View {
     @State private var viewModel: WordExplanationViewModel
-
+    
     init(viewModel: WordExplanationViewModel = WordExplanationViewModel()) {
         self._viewModel = State(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
         VStack(spacing: Spacing.xl) {
-            Text(viewModel.word.word)
-                .font(.title)
-                .bold()
-                .foregroundStyle(.blackNormal)
+            
+            VStack {
+                Text(viewModel.word.word)
+                    .font(.title)
+                    .bold()
+                    .foregroundStyle(.blackNormal)
+                
+                Text(viewModel.word.pronunciation)
+                    .font(.subheadline)
+                    .bold()
+                    .foregroundStyle(.blackNormal)
+            }
+            
             Text(viewModel.word.meaning)
                 .multilineTextAlignment(.leading)
                 .foregroundStyle(.blackNormal)

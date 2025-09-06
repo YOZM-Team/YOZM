@@ -21,6 +21,11 @@ struct WordDialogueView: View {
             partnerProfile
             chat
         }
+        .onAppear{
+            Task {
+                await viewModel.loadAndPlayAudioSequence()
+            }
+        }
     }
 
     private var partnerProfile: some View {

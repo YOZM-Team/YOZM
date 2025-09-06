@@ -20,7 +20,7 @@ struct YOZMApp: App {
 struct MainView: View {
     var body: some View {
         NavigationStack {
-            DevView()
+            ChapterView()
         }
     }
 }

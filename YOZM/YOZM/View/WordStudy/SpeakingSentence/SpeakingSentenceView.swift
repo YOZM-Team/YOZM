@@ -60,6 +60,11 @@ struct SpeakingSentenceView: View {
                 }
             }
         }
+        .onAppear{
+            Task {
+                await viewModel.loadAudio()
+            }
+        }
         .padding(.vertical, Spacing.lg)
         .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
