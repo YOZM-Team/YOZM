@@ -12,3 +12,13 @@ struct Stage: Codable {
     let title: String
     let words: [Word]
 }
+
+extension Stage {
+    static var sample: Stage {
+        Stage(
+            id: 0,
+            title: "LotteWorldTower",
+            words: Array(repeating: .sampleWord, count: 5)
+        )
+    }
+}

@@ -67,29 +67,42 @@ struct WordStudyView: View {
     }
 
     private var dialogue: some View {
-        let viewModel = WordDialogueViewModel(finishAction: viewModel.finishAction)
+        let viewModel = WordDialogueViewModel(
+            word: viewModel.word,
+            finishAction: viewModel.finishAction
+        )
         return WordDialogueView(viewModel: viewModel)
     }
 
     private var explanation: some View {
-        let viewModel = WordExplanationViewModel(finishAction: viewModel.finishAction)
+        let viewModel = WordExplanationViewModel(
+            word: viewModel.word,
+            finishAction: viewModel.finishAction
+        )
         return WordExplanationView(viewModel: viewModel)
     }
 
     private var writingWord: some View {
-        let viewModel = WritingWordViewModel(finishAction: viewModel.finishAction)
+        let viewModel = WritingWordViewModel(
+            word: viewModel.word,
+            finishAction: viewModel.finishAction
+        )
         return WritingWordView(viewModel: viewModel)
     }
 
     private var speakingSentence: some View {
-        let viewModel = SpeakingSentenceViewModel(finishAction: viewModel.finishAction)
+        let viewModel = SpeakingSentenceViewModel(
+            word: viewModel.word,
+            finishAction: viewModel.finishAction
+        )
         return SpeakingSentenceView(viewModel: viewModel)
     }
 
     private var writingSentence: some View {
-        let viewModel = WritingSentenceViewModel {
-            self.viewModel.setIsNextButtonEnabled(true)
-        }
+        let viewModel = WritingSentenceViewModel(
+            word: viewModel.word,
+            finishAction: viewModel.finishAction
+        )
         return WritingSentenceView(viewModel: viewModel)
     }
 
@@ -117,7 +130,8 @@ struct WordStudyView: View {
 
             Spacer()
 
-            Button {} label: {
+            Button {
+            } label: {
                 Image(systemName: "house")
                     .foregroundStyle(.blackNormal)
             }

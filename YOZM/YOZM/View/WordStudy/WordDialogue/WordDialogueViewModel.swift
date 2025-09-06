@@ -13,10 +13,10 @@ final class WordDialogueViewModel {
     let finishAction: (() -> Void)?
 
     init(
-        dialogue: [Dialogue] = Word.sampleWord.sampleDialogue,
+        word: Word = Word.sampleWord,
         finishAction: (() -> Void)? = nil
     ) {
-        self.dialogue = dialogue
+        self.dialogue = word.sampleDialogue
         self.finishAction = finishAction
     }
 }
