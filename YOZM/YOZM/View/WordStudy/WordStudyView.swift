@@ -51,6 +51,29 @@ struct WordStudyView: View {
             }
             .padding(24)
         }
+        .onAppear {
+            GoogleAnalyticsService.shared.setCurrentScreen(.studyWord)
+            // TODO: Set chapter name, stage name, word id
+            GoogleAnalyticsService.shared.screenLearning(
+                chapterName: "Seoul",
+                stageName: "LotteWorldTower",
+                wordId: 0
+            )
+            GoogleAnalyticsService.shared.learningStepStarted(
+                wordId: 0,
+                chapterName: "Seoul",
+                stageName: "LotteWorldTower"
+            )
+        }
+        .onDisappear {
+            // TODO: Set chapter name, dropout stage
+            if viewModel.wordStudyState != .finish {
+                GoogleAnalyticsService.shared.chapterDropout(
+                    chapterName: "Seoul",
+                    dropoutStage: "LotteWorldTower"
+                )
+            }
+        }
     }
 
     private var background: some View {
@@ -67,22 +90,30 @@ struct WordStudyView: View {
     }
 
     private var dialogue: some View {
-        let viewModel = WordDialogueViewModel(finishAction: viewModel.finishAction)
+        let viewModel = WordDialogueViewModel(
+            finishAction: viewModel.finishAction
+        )
         return WordDialogueView(viewModel: viewModel)
     }
 
     private var explanation: some View {
-        let viewModel = WordExplanationViewModel(finishAction: viewModel.finishAction)
+        let viewModel = WordExplanationViewModel(
+            finishAction: viewModel.finishAction
+        )
         return WordExplanationView(viewModel: viewModel)
     }
 
     private var writingWord: some View {
-        let viewModel = WritingWordViewModel(finishAction: viewModel.finishAction)
+        let viewModel = WritingWordViewModel(
+            finishAction: viewModel.finishAction
+        )
         return WritingWordView(viewModel: viewModel)
     }
 
     private var speakingSentence: some View {
-        let viewModel = SpeakingSentenceViewModel(finishAction: viewModel.finishAction)
+        let viewModel = SpeakingSentenceViewModel(
+            finishAction: viewModel.finishAction
+        )
         return SpeakingSentenceView(viewModel: viewModel)
     }
 
@@ -117,7 +148,8 @@ struct WordStudyView: View {
 
             Spacer()
 
-            Button {} label: {
+            Button {
+            } label: {
                 Image(systemName: "house")
                     .foregroundStyle(.blackNormal)
             }

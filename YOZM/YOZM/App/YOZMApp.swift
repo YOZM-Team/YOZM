@@ -31,9 +31,21 @@ struct YOZMApp: App {
 }
 
 struct MainView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    
     var body: some View {
         NavigationStack {
-            DevView()
+            WordStudyView()
+        }
+        .onChange(of: scenePhase) { oldValue, newValue in
+            switch newValue {
+            case .background:
+                GoogleAnalyticsService.shared.appBackgrounded()
+            case .active:
+                GoogleAnalyticsService.shared.appForegrounded()
+            default:
+                break
+            }
         }
     }
 }

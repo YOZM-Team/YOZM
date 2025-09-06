@@ -50,6 +50,18 @@ struct WritingWordView: View {
         .padding(.horizontal, 32)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
+        .onAppear {
+            GoogleAnalyticsService.shared.inputWordTestStarted(
+                wordId: viewModel.word.id
+            )
+        }
+        .onDisappear {
+            GoogleAnalyticsService.shared.inputWordTestCompleted(
+                wordId: viewModel.word.id,
+                correct: viewModel.isCorrect,
+                attempts: 0
+            )
+        }
     }
 }
 

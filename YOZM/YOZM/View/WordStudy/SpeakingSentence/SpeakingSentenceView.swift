@@ -64,6 +64,16 @@ struct SpeakingSentenceView: View {
         .padding(.horizontal, 32)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
+        .onAppear {
+            GoogleAnalyticsService.shared.pronunciationPracticeStarted(
+                wordId: viewModel.word.id
+            )
+        }
+        .onDisappear {
+            GoogleAnalyticsService.shared.pronunciationPracticeCompleted(
+                wordId: viewModel.word.id
+            )
+        }
     }
 
     @ViewBuilder
