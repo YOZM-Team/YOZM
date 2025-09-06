@@ -9,7 +9,33 @@ import SwiftUI
 
 struct MyPageView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        VStack(spacing: 16) {
+            
+            navigationBar
+            
+            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        }
+        .padding(24)
+    }
+    
+    private var navigationBar: some View {
+        HStack(spacing: 12) {
+            Text("My Page")
+                .font(.title2)
+                .bold()
+            
+            Spacer()
+            
+            Image(systemName: "bell")
+                .font(.title)
+                .bold()
+            
+            Image(systemName: "gearshape")
+                .font(.title)
+                .bold()
+            
+        }
     }
 }
 
