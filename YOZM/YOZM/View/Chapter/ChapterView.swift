@@ -26,7 +26,7 @@ struct ChapterView: View {
                 }
             }
             .padding()
-            .safeAreaPadding(.vertical, 64)
+            .safeAreaPadding(.vertical, Spacing.xxxl)
             .frame(maxWidth: .infinity)
             .onGeometryChange(for: CGRect.self) { proxy in
                 proxy.frame(in: .named("ScrollView"))
@@ -56,6 +56,12 @@ struct ChapterView: View {
             alignment: .top
         )
         .ignoresSafeArea()
+        .onAppear {
+            //TODO: 데이터 조회가 늦은 경우 화면 이동 막기
+            Task {
+                await viewModel.fetchData()
+            }
+        }
     }
 }
 

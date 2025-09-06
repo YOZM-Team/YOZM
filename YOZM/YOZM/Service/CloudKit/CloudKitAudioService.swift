@@ -30,7 +30,17 @@ final class CloudKitAudioService {
     /// Word ID로 dialogue asset URL 배열 가져오기
     func fetchDialogueAudioURLs(wordId: Int64) async throws -> [URL] {
         let wordRecord = try await fetchWordRecord(by: wordId)
-        return try extractAudioURLs(from: wordRecord, fieldName: AudioType.dialogue.fieldName)
+        
+        let dialogueRecords = try await fetchDialogueRecords(for: wordRecord)
+
+        var audioURLs: [URL] = []
+        for dialogueRecord in dialogueRecords {
+            if let audioURL = try? extractAudioURL(from: dialogueRecord, fieldName: AudioType.dialogue.fieldName) {
+                audioURLs.append(audioURL)
+            }
+        }
+        
+        return audioURLs
     }
     
     /// Dialogue ID로 특정 dialogue asset URL 가져오기
@@ -47,7 +57,28 @@ final class CloudKitAudioService {
             throw CloudKitError.recordNotFound
         }
         
-        return try extractAudioURL(from: dialogueRecord, fieldName: "dialogueAudio")
+        return try extractAudioURL(from: dialogueRecord, fieldName: AudioType.dialogue.fieldName)
+    }
+    
+    private func fetchDialogueRecords(for wordRecord: CKRecord) async throws -> [CKRecord] {
+        let dialogueQuery = CKQuery(
+            recordType: CloudKitType.dialogueRecordType,
+            predicate: NSPredicate(format: "\(CloudKitField.wordReference.rawValue) == %@", wordRecord)
+        )
+        
+        let (results, _) = try await publicDatabase.records(matching: dialogueQuery)
+        
+        var dialogueRecords: [CKRecord] = []
+        for (_, result) in results {
+            switch result {
+            case .success(let record):
+                dialogueRecords.append(record)
+            case .failure:
+                throw CloudKitError.recordNotFound
+            }
+        }
+        
+        return dialogueRecords
     }
     
     private func fetchWordRecord(by wordId: Int64) async throws -> CKRecord {
@@ -81,7 +112,7 @@ final class CloudKitAudioService {
         guard let audioAssets = record[fieldName] as? [CKAsset] else {
             throw CloudKitError.audioDataNotFound
         }
-        
+ 
         return audioAssets.compactMap { $0.fileURL }
     }
 }

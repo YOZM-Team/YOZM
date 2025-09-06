@@ -18,6 +18,9 @@ final class WritingSentenceViewModel {
     }
 
     private let finishAction: (() -> Void)?
+    
+    private let audioPlayerService: AudioPlayerService
+    private let cloudkitService: CloudKitService
 
     init(word: Word = Word.sampleWord, finishAction: (() -> Void)? = nil) {
         self.word = word
@@ -26,18 +29,39 @@ final class WritingSentenceViewModel {
         self.text = ""
 
         self.finishAction = finishAction
+        self.cloudkitService = CloudKitService.shared
+        self.audioPlayerService = AudioPlayerService.shared
     }
 
     func setIsShowingHint(_ isShowingHint: Bool) {
         self.isShowingHint = isShowingHint
     }
 
+    func loadAudio() async {
+        do {
+            let url = try await cloudkitService.fetchSentenceAudioURL(wordId: word.id)
+            try audioPlayerService.load(url: url)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
     func playAudio() {
-        isPlaying = true
+        do {
+            try audioPlayerService.play()
+            isPlaying = true
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 
     func stopAudio() {
-        isPlaying = false
+        do {
+            try audioPlayerService.stop()
+            isPlaying = false
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 
     func setText(_ text: String) {

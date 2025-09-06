@@ -14,7 +14,15 @@ struct MyPageView: View {
             
             navigationBar
             
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+            VStack{
+                
+                Image(.characterRank1)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 157, height: 157)
+                
+                
+            }
         }
         .padding(24)
     }

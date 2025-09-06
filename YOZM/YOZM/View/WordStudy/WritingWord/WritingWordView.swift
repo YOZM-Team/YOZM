@@ -29,7 +29,7 @@ struct WritingWordView: View {
 
             Spacer()
 
-            VStack(spacing: 32) {
+            VStack(spacing: Spacing.xl) {
                 Text("Type the word")
 
                 StudyTextField(
@@ -46,8 +46,8 @@ struct WritingWordView: View {
                 )
             }
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 32)
+        .padding(.vertical, Spacing.lg)
+        .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: 480)
         .background(StudyCardBackground())
     }
