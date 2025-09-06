@@ -24,7 +24,7 @@ enum Rank{
     var explanation: String{
         switch self {
         case .fossilSenior:
-            return "설명 문구"
+            return "Congratulations! As of July 21, you have been formally promoted from Level 2.[꼰대 부장] to Level 3.[화석 선배]. Please be advised that, should you continue without surrender, you may eventually attain the distinguished status of K-느좋 Trend person."
         }
     }
 }
