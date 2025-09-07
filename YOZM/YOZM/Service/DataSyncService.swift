@@ -37,11 +37,6 @@ enum DataSyncState {
         return false
     }
     
-    var lastSyncDate: Date? {
-        if case .success(let date) = self { return date }
-        return nil
-    }
-    
     var error: DataSyncError? {
         if case .failed(let error) = self { return error }
         return nil
@@ -53,47 +48,34 @@ enum DataSyncState {
 final class DataSyncService {
     static let shared = DataSyncService()
     
-    private let cloudKitService = CloudKitService.shared
-    private let swiftDataService = SwiftDataService.shared
-    private let userDefaults = UserDefaults.standard
-    private let database = CKContainer.default().publicCloudDatabase
+    private let cloudKitService: CloudKitService
+    private let swiftDataService: SwiftDataService
     
     private(set) var syncState: DataSyncState = .idle
     
     private init() {
-        setupCloudKitSubscriptions()
-    }
-    
-    private struct Constants {
-        static let lastSyncKey = "lastCloudKitSync"
-        static let subscriptionKey = "cloudkit_subscription_created"
-        static let subscriptionId = "chapter-changes-subscription"
+        self.cloudKitService = CloudKitService.shared
+        self.swiftDataService = SwiftDataService.shared
     }
     
     func syncDataIfNeeded() async {
         guard !syncState.isSyncing else { return }
         
-        let lastSyncKey = Constants.lastSyncKey
-        let lastSync = userDefaults.object(forKey: lastSyncKey) as? Date
-        
-        if lastSync == nil {
-            await performFullSync()
-            userDefaults.set(Date(), forKey: lastSyncKey)
-        }
+        await performFullSync()
     }
     
-    func fetchChaptersFromSwiftData() async -> [Chapter] {
+    func fetchChaptersFromSwiftData() async throws -> [Chapter] {
         do {
-            return try await swiftDataService.fetchAllChaptersAsync()
+            return try swiftDataService.fetchAllChapters()
         } catch {
             syncState = .failed(.swiftDataServiceError(error as? SwiftDataServiceError ?? .fetchError(error)))
-            return []
+            throw DataSyncError.swiftDataServiceError(error as? SwiftDataServiceError ?? .fetchError(error))
         }
     }
     
     func fetchChapter(by id: Int64) async throws -> ChapterModel? {
         do {
-            return try await swiftDataService.fetchChapterAsync(by: id)
+            return try swiftDataService.fetchChapter(by: id)
         } catch {
             throw DataSyncError.swiftDataServiceError(error as? SwiftDataServiceError ?? .fetchError(error))
         }
@@ -104,13 +86,12 @@ final class DataSyncService {
     }
     
     func clearAllData() async throws {
-        try await swiftDataService.clearAllDataAsync()
-        userDefaults.removeObject(forKey: Constants.lastSyncKey)
+        try swiftDataService.clearAllData()
     }
     
     private func shouldResync() async -> Bool {
         do {
-            let chapters = try await swiftDataService.fetchAllChaptersAsync()
+            let chapters = try swiftDataService.fetchAllChapters()
             return chapters.isEmpty
         } catch {
             return true
@@ -142,82 +123,7 @@ final class DataSyncService {
         try await clearAllData()
         
         for chapter in chapters {
-            try await swiftDataService.saveChapterAsync(chapter)
-        }
-    }
-    
-    private func setupCloudKitSubscriptions() {
-        Task {
-            await subscribeToCloudKitChanges()
-        }
-    }
-    
-    private func subscribeToCloudKitChanges() async {
-        let subscriptionKey = Constants.subscriptionKey
-        guard !userDefaults.bool(forKey: subscriptionKey) else { return }
-        
-        let subscriptionId = Constants.subscriptionId
-        let subscription = CKQuerySubscription(
-            recordType: CloudKitType.chapterRecordType,
-            predicate: NSPredicate(value: true),
-            subscriptionID: subscriptionId,
-            options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion]
-        )
-        
-        let info = CKSubscription.NotificationInfo()
-        info.shouldSendContentAvailable = true
-        subscription.notificationInfo = info
-        
-        do {
-            _ = try await database.save(subscription)
-            userDefaults.set(true, forKey: subscriptionKey)
-        } catch {
-            syncState = .failed(.subscriptionCreationFailed(error))
-        }
-    }
-}
-extension SwiftDataService {
-    func fetchAllChaptersAsync() async throws -> [Chapter] {
-        return try await withCheckedThrowingContinuation { continuation in
-            do {
-                let result = try fetchAllChapters()
-                continuation.resume(returning: result)
-            } catch {
-                continuation.resume(throwing: error)
-            }
-        }
-    }
-    
-    func fetchChapterAsync(by id: Int64) async throws -> ChapterModel? {
-        return try await withCheckedThrowingContinuation { continuation in
-            do {
-                let result = try fetchChapter(by: id)
-                continuation.resume(returning: result)
-            } catch {
-                continuation.resume(throwing: error)
-            }
-        }
-    }
-    
-    func saveChapterAsync(_ chapter: Chapter) async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            do {
-                try saveChapter(chapter)
-                continuation.resume()
-            } catch {
-                continuation.resume(throwing: error)
-            }
-        }
-    }
-    
-    func clearAllDataAsync() async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            do {
-                try clearAllData()
-                continuation.resume()
-            } catch {
-                continuation.resume(throwing: error)
-            }
+            try swiftDataService.saveChapter(chapter)
         }
     }
 }

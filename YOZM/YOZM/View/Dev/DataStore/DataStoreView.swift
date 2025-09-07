@@ -49,8 +49,6 @@ struct DataStoreView: View {
                 }
             }
             .buttonStyle(.bordered)
-            
-            Text("마지막 동기화: \(formatDate(dataSyncService.lastSyncDate))")
         }
         .padding()
         .cornerRadius(8)
@@ -64,14 +62,6 @@ struct DataStoreView: View {
             Button("CloudKit 저장") {
                 Task {
                     try await cloudKitService.upload()
-                }
-            }
-            .buttonStyle(.bordered)
-            
-            Button("CloudKit 조회") {
-                Task {
-                    let chapter = try await cloudKitService.fetchChapter(by: 1)
-                    print("CloudKit 조회 결과: \(chapter.title)")
                 }
             }
             .buttonStyle(.bordered)
@@ -107,14 +97,17 @@ struct DataStoreView: View {
     }
     
     private func fetchChapters() async {
-        let chapters = await dataSyncService.fetchChaptersFromSwiftData()
-        await MainActor.run {
-            syncStatus = "챕터 \(chapters.count)개 조회됨"
-        }
-        for chapter in chapters {
-            print("챕터: \(chapter.title) (ID: \(chapter.id))")
-            for stage in chapter.stages {
-                print("스테이지: \(stage.title) (단어 \(stage.words.count)개)")
+        Task {
+            let chapters = try await dataSyncService.fetchChaptersFromSwiftData()
+            
+            await MainActor.run {
+                syncStatus = "챕터 \(chapters.count)개 조회됨"
+            }
+            for chapter in chapters {
+                print("챕터: \(chapter.title) (ID: \(chapter.id))")
+                for stage in chapter.stages {
+                    print("스테이지: \(stage.title) (단어 \(stage.words.count)개)")
+                }
             }
         }
     }
@@ -128,14 +121,6 @@ struct DataStoreView: View {
             syncStatus = "모든 데이터 삭제 완료"
         }
         print("✅ 모든 SwiftData 삭제 완료")
-    }
-    
-    private func formatDate(_ date: Date?) -> String {
-        guard let date = date else { return "없음" }
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
     }
 }
 
