@@ -2,7 +2,7 @@
 //  StudyModels.swift
 //  YOZM
 //
-//  Created by Claude on 8/27/25.
+//  Created by 최희진 on 9/7/25.
 //
 
 import Foundation
@@ -125,10 +125,18 @@ extension WordModel {
 
 extension DialogueModel {
     func toDialogue() -> Dialogue {
-        Dialogue(id: self.id, speakerType: self.speakerType, sentence: self.sentence)
+        Dialogue(
+            id: self.id,
+            speakerType: self.speakerType,
+            sentence: self.sentence
+        )
     }
     
     static func from(_ dialogue: Dialogue) -> DialogueModel {
-        DialogueModel(id: dialogue.id, speakerType: dialogue.speakerType, sentence: dialogue.sentence)
+        DialogueModel(
+            id: dialogue.id,
+            speakerType: dialogue.speakerType,
+            sentence: dialogue.sentence
+        )
     }
 }
