@@ -7,6 +7,7 @@
 
 import FirebaseCore
 import SwiftUI
+import SwiftData
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -35,7 +36,7 @@ struct MainView: View {
     
     var body: some View {
         NavigationStack {
-            ChapterView()
+            DevView()
         }
         .onChange(of: scenePhase) { oldValue, newValue in
             switch newValue {
