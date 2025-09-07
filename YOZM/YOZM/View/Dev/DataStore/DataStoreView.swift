@@ -10,6 +10,7 @@ import SwiftUI
 struct DataStoreView: View {
     private let cloudKitService = CloudKitService.shared
     private let dataSyncService = DataSyncService.shared
+    private let swiftDataService = SwiftDataService.shared
     
     @State private var syncStatus = "Ready"
     
@@ -98,7 +99,7 @@ struct DataStoreView: View {
     
     private func fetchChapters() async {
         Task {
-            let chapters = try await dataSyncService.fetchChaptersFromSwiftData()
+            let chapters = try swiftDataService.fetchAllChapters()
             
             await MainActor.run {
                 syncStatus = "챕터 \(chapters.count)개 조회됨"
@@ -113,9 +114,8 @@ struct DataStoreView: View {
     }
     
     private func clearAllData() async {
-        
         Task {
-            try await dataSyncService.clearAllData()
+            try swiftDataService.clearAllData()
         }
         await MainActor.run {
             syncStatus = "모든 데이터 삭제 완료"

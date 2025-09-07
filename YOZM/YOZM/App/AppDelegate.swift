@@ -14,6 +14,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     let dataSyncService = DataSyncService.shared
     
+    private struct Constants {
+        static let subscriptionKey = "cloudkit_subscription_created"
+    }
+    
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -60,6 +64,8 @@ private extension AppDelegate {
 // MARK: - CloudKit Subscription
 private extension AppDelegate {
     func subscribeToCloudKitChanges() async {
+        guard !UserDefaults.standard.bool(forKey: Constants.subscriptionKey) else {return}
+        
         let subscriptions = createCloudKitSubscriptions()
         
         do {
@@ -72,6 +78,7 @@ private extension AppDelegate {
                 try await group.waitForAll()
             }
             
+            UserDefaults.standard.set(true, forKey: Constants.subscriptionKey)        
         } catch {
             print("CloudKit subscription failed: \(error.localizedDescription)")
         }

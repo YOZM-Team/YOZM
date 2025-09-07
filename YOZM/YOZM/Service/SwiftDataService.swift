@@ -13,6 +13,7 @@ enum SwiftDataServiceError: Error {
     case saveError(Error)
     case fetchError(Error)
     case deleteError(Error)
+    case chapterNotFound
     
     var errorDescription: String {
         switch self {
@@ -24,6 +25,8 @@ enum SwiftDataServiceError: Error {
             return "데이터 조회에 실패했습니다: \(error.localizedDescription)"
         case .deleteError(let error):
             return "데이터 삭제에 실패했습니다: \(error.localizedDescription)"
+        case .chapterNotFound:
+            return "챕터를 찾을 수 없습니다"
         }
     }
 }
@@ -111,7 +114,7 @@ final class SwiftDataService {
         }
     }
     
-    func fetchChapter(by id: Int64) throws -> ChapterModel? {
+    func fetchChapter(by id: Int64) throws -> Chapter {
         guard let context = modelContext else {
             throw SwiftDataServiceError.modelContextNotInitialized
         }
@@ -123,7 +126,11 @@ final class SwiftDataService {
         let fetchDescriptor = FetchDescriptor<ChapterModel>(predicate: predicate)
         
         do {
-            return try context.fetch(fetchDescriptor).first
+            let chapterModels = try context.fetch(fetchDescriptor)
+            guard let chapterModel = chapterModels.first else {
+                throw SwiftDataServiceError.chapterNotFound
+            }
+            return chapterModel.toChapter()
         } catch {
             throw SwiftDataServiceError.fetchError(error)
         }

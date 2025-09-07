@@ -12,7 +12,6 @@ import CloudKit
 enum DataSyncError: Error, LocalizedError {
     case cloudKitFetchFailed(Error)
     case subscriptionCreationFailed(Error)
-    case swiftDataServiceError(SwiftDataServiceError)
     
     var errorDescription: String? {
         switch self {
@@ -20,8 +19,6 @@ enum DataSyncError: Error, LocalizedError {
             return "CloudKit 데이터 가져오기 실패: \(error.localizedDescription)"
         case .subscriptionCreationFailed(let error):
             return "CloudKit 구독 생성 실패: \(error.localizedDescription)"
-        case .swiftDataServiceError(let error):
-            return error.errorDescription
         }
     }
 }
@@ -64,38 +61,8 @@ final class DataSyncService {
         await performFullSync()
     }
     
-    func fetchChaptersFromSwiftData() async throws -> [Chapter] {
-        do {
-            return try swiftDataService.fetchAllChapters()
-        } catch {
-            syncState = .failed(.swiftDataServiceError(error as? SwiftDataServiceError ?? .fetchError(error)))
-            throw DataSyncError.swiftDataServiceError(error as? SwiftDataServiceError ?? .fetchError(error))
-        }
-    }
-    
-    func fetchChapter(by id: Int64) async throws -> ChapterModel? {
-        do {
-            return try swiftDataService.fetchChapter(by: id)
-        } catch {
-            throw DataSyncError.swiftDataServiceError(error as? SwiftDataServiceError ?? .fetchError(error))
-        }
-    }
-    
     func handleCloudKitNotification() async {
         await performFullSync()
-    }
-    
-    func clearAllData() async throws {
-        try swiftDataService.clearAllData()
-    }
-    
-    private func shouldResync() async -> Bool {
-        do {
-            let chapters = try swiftDataService.fetchAllChapters()
-            return chapters.isEmpty
-        } catch {
-            return true
-        }
     }
     
     private func performFullSync() async {
@@ -109,18 +76,12 @@ final class DataSyncService {
             syncState = .success(lastSyncDate: now)
             
         } catch {
-            let syncError: DataSyncError
-            if let swiftDataError = error as? SwiftDataServiceError {
-                syncError = .swiftDataServiceError(swiftDataError)
-            } else {
-                syncError = .cloudKitFetchFailed(error)
-            }
-            syncState = .failed(syncError)
+            syncState = .failed(.cloudKitFetchFailed(error))
         }
     }
     
     private func saveChaptersToSwiftData(_ chapters: [Chapter]) async throws {
-        try await clearAllData()
+        try swiftDataService.clearAllData()
         
         for chapter in chapters {
             try swiftDataService.saveChapter(chapter)
