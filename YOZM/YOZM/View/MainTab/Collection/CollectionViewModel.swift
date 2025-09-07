@@ -8,4 +8,13 @@
 import Foundation
 
 @Observable
-final class CollectionViewModel {}
+final class CollectionViewModel {
+    private(set) var cities: [String]
+    private(set) var landmarks: [String]
+
+    init() {
+        // TODO: Change to fetch data
+        self.cities = ["Seoul", "Busan"]
+        self.landmarks = ["Gwanghwamun"]
+    }
+}
