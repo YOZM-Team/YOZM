@@ -25,7 +25,7 @@ enum DataSyncError: Error, LocalizedError {
 
 enum DataSyncState {
     case idle
-    case syncing
+    case syncing(Task<Void, Never>)
     case success(lastSyncDate: Date)
     case failed(DataSyncError)
     
@@ -40,47 +40,48 @@ enum DataSyncState {
     }
 }
 
-@MainActor
-@Observable
-final class DataSyncService {
+final actor DataSyncService {
     static let shared = DataSyncService()
     
     private let cloudKitService: CloudKitService
     private let swiftDataService: SwiftDataService
     
-    private(set) var syncState: DataSyncState = .idle
+    private var syncState: DataSyncState = .idle
     
     private init() {
         self.cloudKitService = CloudKitService.shared
         self.swiftDataService = SwiftDataService.shared
     }
     
-    func syncDataIfNeeded() async {
-        guard !syncState.isSyncing else { return }
-        
-        await performFullSync()
+    func syncDataIfNeeded() {
+        performFullSync()
     }
     
-    func handleCloudKitNotification() async {
-        await performFullSync()
+    func handleCloudKitNotification() {
+        performFullSync()
     }
     
-    private func performFullSync() async {
-        syncState = .syncing
-        
-        do {
-            let chapters = try await cloudKitService.fetchAllChapters()
-            try await saveChaptersToSwiftData(chapters)
-            
-            let now = Date()
-            syncState = .success(lastSyncDate: now)
-            
-        } catch {
-            syncState = .failed(.cloudKitFetchFailed(error))
+    private func performFullSync() {
+        if case .syncing(let previousTask) = syncState {
+            previousTask.cancel()
         }
+        
+        let task = Task {
+            do {
+                let chapters = try await cloudKitService.fetchAllChapters()
+                try saveChaptersToSwiftData(chapters)
+                
+                let now = Date()
+                syncState = .success(lastSyncDate: now)
+                
+            } catch {
+                syncState = .failed(.cloudKitFetchFailed(error))
+            }
+        }
+        syncState = .syncing(task)
     }
     
-    private func saveChaptersToSwiftData(_ chapters: [Chapter]) async throws {
+    private func saveChaptersToSwiftData(_ chapters: [Chapter]) throws {
         try swiftDataService.clearAllData()
         
         for chapter in chapters {

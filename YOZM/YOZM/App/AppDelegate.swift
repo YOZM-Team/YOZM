@@ -92,6 +92,7 @@ private extension AppDelegate {
             CloudKitType.dialogueRecordType
         ]
         
+        //TODO: 수정/삭제하는 경우에는 push noti 전송 
         return recordTypes.map { recordType in
             let subscription = CKQuerySubscription(
                 recordType: recordType,
