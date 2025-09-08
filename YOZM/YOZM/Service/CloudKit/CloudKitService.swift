@@ -61,6 +61,11 @@ extension CloudKitService {
 
 // MARK: - CloudKitFetcherService Management
 extension CloudKitService {
+    
+    func fetchAllChapters() async throws -> [Chapter] {
+        return try await fetcher.fetchAllChapters()
+    }
+    
     func fetchChapter(by id: Int64) async throws -> Chapter {
         return try await fetcher.fetchChapter(by: id)
     }

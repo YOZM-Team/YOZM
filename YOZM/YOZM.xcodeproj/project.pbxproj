@@ -7,16 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		46852EED2E6D363500C5D003 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 46852EEC2E6D363500C5D003 /* GoogleService-Info.plist */; };
 		E39234C62E69DEA300D7E848 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = E39234C52E69DEA300D7E848 /* FirebaseAnalytics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		46852EEC2E6D363500C5D003 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		46AB4AA42E4783C30002BCC6 /* YOZM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOZM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		46852EF72E6D493300C5D003 /* Exceptions for "YOZM" folder in "YOZM" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 46AB4AA32E4783C30002BCC6 /* YOZM */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		46AB4AA62E4783C30002BCC6 /* YOZM */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				46852EF72E6D493300C5D003 /* Exceptions for "YOZM" folder in "YOZM" target */,
+			);
 			path = YOZM;
 			sourceTree = "<group>";
 		};
@@ -39,6 +54,7 @@
 			children = (
 				46AB4AA62E4783C30002BCC6 /* YOZM */,
 				46AB4AA52E4783C30002BCC6 /* Products */,
+				46852EEC2E6D363500C5D003 /* GoogleService-Info.plist */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -120,6 +136,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46852EED2E6D363500C5D003 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +289,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = Q8UK3SWSPM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = YOZM/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "마이크 접근이 필요합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성 인식을 위해 음성 데이터를 사용합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -310,6 +328,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = Q8UK3SWSPM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = YOZM/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "마이크 접근이 필요합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "음성 인식을 위해 음성 데이터를 사용합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

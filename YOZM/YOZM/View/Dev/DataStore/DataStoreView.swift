@@ -9,73 +9,119 @@ import SwiftUI
 
 struct DataStoreView: View {
     private let cloudKitService = CloudKitService.shared
+    private let dataSyncService = DataSyncService.shared
     private let swiftDataService = SwiftDataService.shared
     
+    @State private var syncStatus = "Ready"
+    
     var body: some View {
+        ScrollView {
+            VStack(spacing: 20) {
+                syncStatusSection
+                cloudKitSyncSection
+                swiftDataSection
+                cloudKitSection
+            }
+            .padding()
+        }
+    }
+    
+    private var syncStatusSection: some View {
         VStack {
-            cloudKitSection
-            swiftDataSection
+            Text("동기화 상태")
+                .font(.headline)
+            Text(syncStatus)
+                .foregroundColor(.secondary)
         }
         .padding()
+        .cornerRadius(8)
+    }
+    
+    private var cloudKitSyncSection: some View {
+        VStack {
+            Text("CloudKit 동기화")
+                .font(.headline)
+            
+            Button("데이터 동기화 시작") {
+                Task {
+                    syncStatus = "동기화 중..."
+                    await dataSyncService.syncDataIfNeeded()
+                    syncStatus = "동기화 완료"
+                }
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding()
+        .cornerRadius(8)
     }
     
     private var cloudKitSection: some View {
-        
-        VStack{
+        VStack {
+            Text("CloudKit 직접 호출")
+                .font(.headline)
+            
             Button("CloudKit 저장") {
                 Task {
                     try await cloudKitService.upload()
                 }
             }
             .buttonStyle(.bordered)
-            
-            Button("CloudKit 조회") {
-                Task {
-                    try await cloudKitService.fetchChapter(by: 1)
-                }
-            }
-            .buttonStyle(.bordered)
         }
+        .padding()
+        .cornerRadius(8)
     }
     
     private var swiftDataSection: some View {
-        VStack{
-            Button("SwiftData 저장") {
-                Task {
-                    await storeSwiftData()
-                }
-            }
-            .buttonStyle(.bordered)
+        VStack {
+            Text("SwiftData 관리")
+                .font(.headline)
             
-            Button("SwiftData 조회") {
-                Task {
-                    await fetchSwiftData()
+            HStack {
+                Button("챕터 조회") {
+                    Task {
+                        await fetchChapters()
+                    }
+                }
+                .buttonStyle(.bordered)
+                
+                Button("데이터 초기화") {
+                    Task {
+                        await clearAllData()
+                    }
+                }
+                .buttonStyle(.bordered)
+                .foregroundColor(.red)
+            }
+        }
+        .padding()
+        .cornerRadius(8)
+    }
+    
+    private func fetchChapters() async {
+        Task {
+            let chapters = try swiftDataService.fetchAllChapters()
+            
+            await MainActor.run {
+                syncStatus = "챕터 \(chapters.count)개 조회됨"
+            }
+            
+            for chapter in chapters {
+                print("챕터: \(chapter.title) (ID: \(chapter.id))")
+                for stage in chapter.stages {
+                    print("스테이지: \(stage.title) (단어 \(stage.words.count)개)")
                 }
             }
-            .buttonStyle(.bordered)
         }
     }
     
-    private func storeSwiftData() async {
-        do {
-            let sampleWords = [WordModel(id: 1, word: "느좋"), WordModel(id: 2, word: "감다살")]
-            for sampleWord in sampleWords {
-                try SwiftDataService.shared.saveWord(sampleWord)
+    private func clearAllData() async {
+        Task {
+            try swiftDataService.clearAllData()
+            
+            await MainActor.run {
+                syncStatus = "모든 데이터 삭제 완료"
             }
-            print("\n \(sampleWords.count)개 단어 저장 완료")
-        } catch {
-            print("\n 일반 에러: \(error.localizedDescription)")
-        }
-    }
-    
-    private func fetchSwiftData() async {
-        do {
-            let savedWords = try SwiftDataService.shared.fetchAllWords()
-            for savedWord in savedWords{
-                print("\n SwiftData 조회 완료: \(savedWord.word)")
-            }
-        } catch {
-            print("\n 일반 에러: \(error.localizedDescription)")
+            print("✅ 모든 SwiftData 삭제 완료")
         }
     }
 }

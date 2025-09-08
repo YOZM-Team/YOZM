@@ -12,7 +12,7 @@ final class ChapterViewModel {
     private(set) var chapter: Chapter
     private(set) var latestCompleteWord: Word?
     
-    private let cloudKitService: CloudKitService
+    private let swiftDataService: SwiftDataService
     
     var availableWords: [Int64: Bool] {
         var isAvailable = true
@@ -50,7 +50,7 @@ final class ChapterViewModel {
     init(chapter: Chapter = .sample) {
         self.chapter = chapter
         self.latestCompleteWord = nil
-        self.cloudKitService = CloudKitService.shared
+        self.swiftDataService = SwiftDataService.shared
         self.scrollViewHeight = .zero
         self.scrollViewOffsetY = .zero
         self.backgroundHeight = .zero
@@ -58,7 +58,7 @@ final class ChapterViewModel {
     
     func fetchData() async {
         do {
-            self.chapter = try await cloudKitService.fetchChapter(by: 1)
+            self.chapter = try swiftDataService.fetchChapter(by: 1)
         } catch {
             print(error.localizedDescription)
         }
