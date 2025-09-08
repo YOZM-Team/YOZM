@@ -59,22 +59,16 @@ final class SwiftDataService {
             throw SwiftDataServiceError.modelContextNotInitialized
         }
         
-        let chapterModel = ChapterModel(id: chapter.id, title: chapter.title)
+        let chapterModel = ChapterModel.from(chapter)
         context.insert(chapterModel)
         
         for stage in chapter.stages {
-            let stageModel = StageModel(id: stage.id, title: stage.title)
+            let stageModel = StageModel.from(stage)
             stageModel.chapter = chapterModel
             context.insert(stageModel)
             
             for word in stage.words {
-                let wordModel = WordModel(
-                    id: word.id,
-                    word: word.word,
-                    meaning: word.meaning,
-                    pronunciation: word.pronunciation,
-                    sampleSentence: word.sampleSentence
-                )
+                let wordModel = WordModel.from(word)
                 wordModel.stage = stageModel
                 context.insert(wordModel)
                 

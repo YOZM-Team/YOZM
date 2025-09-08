@@ -104,6 +104,7 @@ struct DataStoreView: View {
             await MainActor.run {
                 syncStatus = "챕터 \(chapters.count)개 조회됨"
             }
+            
             for chapter in chapters {
                 print("챕터: \(chapter.title) (ID: \(chapter.id))")
                 for stage in chapter.stages {
@@ -116,11 +117,12 @@ struct DataStoreView: View {
     private func clearAllData() async {
         Task {
             try swiftDataService.clearAllData()
+            
+            await MainActor.run {
+                syncStatus = "모든 데이터 삭제 완료"
+            }
+            print("✅ 모든 SwiftData 삭제 완료")
         }
-        await MainActor.run {
-            syncStatus = "모든 데이터 삭제 완료"
-        }
-        print("✅ 모든 SwiftData 삭제 완료")
     }
 }
 
